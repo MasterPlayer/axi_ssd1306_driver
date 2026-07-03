@@ -1,0 +1,3 @@
+[submodule "submodules/axis_iic_bridge"]
+	path = submodules/axis_iic_bridge
+	url = https://github.com/MasterPlayer/axis_iic_bridge.git
