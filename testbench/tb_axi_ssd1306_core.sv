@@ -103,6 +103,18 @@ module tb_axi_ssd1306_core ();
         .o_sda_t          (o_sda_t          )
     );
 
+
+
+
+    tb_slave_device_model tb_slave_device_model_inst (
+        .i_clk    (i_clk    ),
+        .i_reset  (~i_resetn),
+        .iic_scl_i(o_scl_t  ),
+        .iic_sda_i(o_sda_t  ),
+        .iic_scl_o(i_scl_i  ),
+        .iic_sda_o(i_sda_i  )
+    );
+
     logic [ 0:0] s_axi_awid    = '{default:0};
     logic [31:0] s_axi_awaddr  = '{default:0};
     logic [ 7:0] s_axi_awlen   = 8'hFF;

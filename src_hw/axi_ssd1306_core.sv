@@ -2,19 +2,20 @@
 
 
 module axi_ssd1306_core #(
-    parameter integer CLK_PERIOD        = 100000000,
-    parameter integer CLK_I2C_PERIOD    = 400000   ,
-    parameter integer AXI_ADDR_WIDTH    = 32       ,
-    parameter integer AXI_DATA_WIDTH    = 32       ,
-    parameter integer AXIS_DATA_WIDTH   = 8        ,
-    parameter integer AXIS_DEPTH        = 16        
+    parameter integer AXI_ADDR_WIDTH  = 32       ,
+    parameter integer AXI_DATA_WIDTH  = 32       ,
+    parameter         CLK_PERIOD      = 100000000,
+    parameter         CLK_I2C_PERIOD  = 25000000 ,
+    parameter         AXIS_DATA_WIDTH = 32       ,
+    parameter         DEPTH           = 32       ,
+    parameter         SIZE_WIDTH      = 8
 ) (
     input  logic                      i_clk            ,
     input  logic                      i_resetn         ,
     //
     input  logic                      i_update_screen  ,
     input  logic [AXI_ADDR_WIDTH-1:0] i_axi_baseaddress,
-    input  logic [               6:0] i_cmd_iic_address ,
+    input  logic [               6:0] i_cmd_iic_address,
     // interface to memory
     output logic [AXI_ADDR_WIDTH-1:0] o_m_axi_araddr   ,
     output logic [               7:0] o_m_axi_arlen    ,
@@ -66,6 +67,10 @@ module axi_ssd1306_core #(
 
     logic [2:0] segment_index = '{default:0};
 
+
+    logic [           7:0] write_cmd_iic_addr = '{default:0};
+    logic [SIZE_WIDTH-1:0] write_cmd_size     = '{default:0};
+    logic                  write_cmd_valid    = 1'b0;
 
 
     always_ff @(posedge i_clk) begin : current_state_processing 
@@ -240,44 +245,69 @@ module axi_ssd1306_core #(
     always_comb axi_fifo_rden = (data_index == 2'b11) & s_axis_tready;
 
 
-    axis_iic_bridge #(
+    axis_iic_bridge_cmd #(
         .CLK_PERIOD    (CLK_PERIOD     ),
         .CLK_I2C_PERIOD(CLK_I2C_PERIOD ),
         .DATA_WIDTH    (AXIS_DATA_WIDTH),
-        .WRITE_CONTROL ("COUNTER"      ),
-        .DEPTH         (AXIS_DEPTH     )
-    ) axis_iic_bridge_inst (
-        .i_clk          (i_clk        ),
-        .i_reset        (~i_resetn    ),
+        .DEPTH         (DEPTH          ),
+        .SIZE_WIDTH    (SIZE_WIDTH     )
+    ) axis_iic_bridge_cmd_inst (
+        .i_clk               (i_clk             ),
+        .i_reset             (~i_resetn         ),
         //
-        .i_s_axis_tdata (s_axis_tdata ),
-        .i_s_axis_tuser (s_axis_tuser ),   // tuser or tdest for addressation data
-        .i_s_axis_tkeep (1'b1         ),
-        .i_s_axis_tlast (s_axis_tlast ),
-        .i_s_axis_tvalid(s_axis_tvalid),
-        .o_s_axis_tready(s_axis_tready),
+        .i_write_cmd_iic_addr(write_cmd_iic_addr),
+        .i_write_cmd_size    (write_cmd_size    ),
+        .i_write_cmd_valid   (write_cmd_valid   ),
         //
-        .o_m_axis_tdata (             ),
-        .o_m_axis_tkeep (             ),
-        .o_m_axis_tuser (             ),
-        .o_m_axis_tlast (             ),
-        .o_m_axis_tvalid(             ),
-        .i_m_axis_tready(1'b1         ),
+        .i_s_axis_tdata      (s_axis_tdata      ),
+        .i_s_axis_tkeep      (1'b1              ),
+        .i_s_axis_tlast      (s_axis_tlast      ),
+        .i_s_axis_tvalid     (s_axis_tvalid     ),
+        .o_s_axis_tready     (s_axis_tready     ),
         //
-        .i_scl_i        (i_scl_i      ),
-        .i_sda_i        (i_sda_i      ),
-        .o_scl_t        (o_scl_t      ),
-        .o_sda_t        (o_sda_t      )
+        .i_read_cmd_iic_addr ('0                ),
+        .i_read_cmd_size     ('0                ),
+        .i_read_cmd_valid    (1'b0              ),
+        //
+        .o_m_axis_tdata      (                  ),
+        .o_m_axis_tkeep      (                  ),
+        .o_m_axis_tlast      (                  ),
+        .o_m_axis_tvalid     (                  ),
+        .i_m_axis_tready     (1'b0              ),
+        //
+        .i_scl_i             (i_scl_i           ),
+        .i_sda_i             (i_sda_i           ),
+        .o_scl_t             (o_scl_t           ),
+        .o_sda_t             (o_sda_t           )
     );
 
-
-    always_ff @(posedge i_clk) begin : s_axis_tuser_processing
-        case (current_state) 
+    always_ff @(posedge i_clk) begin : write_cmd_iic_addr_processing 
+        case (current_state)
+            
             IDLE_ST : 
-                s_axis_tuser <= {i_cmd_iic_address, 1'b0};
-
+                write_cmd_iic_addr <= {i_cmd_iic_address, 1'b0};
+            
             default : 
-                s_axis_tuser <= s_axis_tuser;
+                write_cmd_iic_addr <= write_cmd_iic_addr;
+
+        endcase // current_state
+    end 
+
+    always_ff @(posedge i_clk) begin : write_cmd_processing 
+        case (current_state)
+            TX_SET_SEGMENT_ADDRESS_ST : begin 
+                if (word_counter == 0) begin 
+                    write_cmd_size <= 8'h02; write_cmd_valid <= 1'b1;
+                end else begin 
+                    write_cmd_size <= write_cmd_size; write_cmd_valid <= 1'b0;
+                end 
+            end 
+
+            TX_CMD_DATA_ST : begin 
+                write_cmd_size <= 8'h81; write_cmd_valid <= 1'b1;
+            end 
+
+            default : begin write_cmd_size <= 8'h00; write_cmd_valid <= 1'b0; end
         endcase // current_state
     end 
 
