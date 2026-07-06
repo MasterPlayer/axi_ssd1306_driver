@@ -6,8 +6,8 @@
 module tb_axi_ssd1306_core ();
 
 
-    parameter integer CLK_PERIOD     = 100000000;
-    parameter integer CLK_I2C_PERIOD = 400000   ;
+    parameter integer CLK_PERIOD     = 1000000;
+    parameter integer CLK_I2C_PERIOD = 100000   ;
     parameter integer AXI_ADDR_WIDTH = 32       ;
     parameter integer AXI_DATA_WIDTH = 32       ;
     parameter integer AXIS_DATA_WIDTH= 8        ;

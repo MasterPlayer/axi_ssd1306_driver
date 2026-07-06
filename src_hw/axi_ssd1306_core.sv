@@ -140,6 +140,7 @@ module axi_ssd1306_core #(
         end 
     end 
 
+
     always_ff @(posedge i_clk) begin : word_counter_processing 
         case (current_state)
             TX_SET_SEGMENT_ADDRESS_ST : 
@@ -161,6 +162,7 @@ module axi_ssd1306_core #(
 
         endcase // current_state
     end 
+
 
     always_ff @(posedge i_clk) begin : o_m_axi_araddr_processing 
         case (current_state)
@@ -293,23 +295,34 @@ module axi_ssd1306_core #(
         endcase // current_state
     end 
 
+
+
     always_ff @(posedge i_clk) begin : write_cmd_processing 
         case (current_state)
             TX_SET_SEGMENT_ADDRESS_ST : begin 
-                if (word_counter == 0) begin 
-                    write_cmd_size <= 8'h02; write_cmd_valid <= 1'b1;
+                if (s_axis_tready) begin 
+                    if (word_counter == 0) begin 
+                        write_cmd_size <= 8'h02; write_cmd_valid <= 1'b1;
+                    end else begin 
+                        write_cmd_size <= write_cmd_size; write_cmd_valid <= 1'b0;
+                    end 
                 end else begin 
                     write_cmd_size <= write_cmd_size; write_cmd_valid <= 1'b0;
                 end 
             end 
 
             TX_CMD_DATA_ST : begin 
-                write_cmd_size <= 8'h81; write_cmd_valid <= 1'b1;
+                if (s_axis_tready) begin 
+                    write_cmd_size <= 8'h81; write_cmd_valid <= 1'b1;   
+                end else begin 
+                    write_cmd_size <= write_cmd_size; write_cmd_valid <= 1'b0;
+                end 
             end 
 
             default : begin write_cmd_size <= 8'h00; write_cmd_valid <= 1'b0; end
         endcase // current_state
     end 
+
 
 
     always_ff @(posedge i_clk) begin : s_axis_tdata_processing 
@@ -430,6 +443,7 @@ module axi_ssd1306_core #(
 
             default : 
                 segment_index <= segment_index;
+
         endcase // current_state
     end 
 
