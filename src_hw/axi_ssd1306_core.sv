@@ -7,7 +7,7 @@ module axi_ssd1306_core #(
     parameter         CLK_PERIOD      = 100000000,
     parameter         CLK_I2C_PERIOD  = 25000000 ,
     parameter         AXIS_DATA_WIDTH = 32       ,
-    parameter         DEPTH           = 32       ,
+    parameter         AXIS_DEPTH      = 32       ,
     parameter         SIZE_WIDTH      = 8
 ) (
     input  logic                      i_clk            ,
@@ -41,37 +41,31 @@ module axi_ssd1306_core #(
         ESTABLISH_ADDRESS_ST, 
         AWAIT_DATA_ST,
 
-        TX_SET_SEGMENT_ADDRESS_ST,
-
-        TX_CMD_DATA_ST,
-        TX_DATA_ST,
-        
-        INCREMENT_SEGMENT_ADDRESS_ST,
+        TX_CMD_SET_SEGMENT_ADDRESS_ST,
+        TX_CMD_SET_DATA_ST,
+        TX_DATA_ST, 
 
         STUB_ST
-
     } fsm;
 
     logic [  (AXIS_DATA_WIDTH-1):0] s_axis_tdata;
-    logic [                    7:0] s_axis_tuser;
-    logic [(AXIS_DATA_WIDTH/8)-1:0] s_axis_tkeep;
     logic                           s_axis_tlast;
     logic                           s_axis_tvalid;
     logic                           s_axis_tready;
 
-    logic [1:0] data_index = '{default:0};
-
     fsm current_state = IDLE_ST;
-
-    logic [7:0] word_counter = '{default:0};
-
-    logic [2:0] segment_index = '{default:0};
-
 
     logic [           7:0] write_cmd_iic_addr = '{default:0};
     logic [SIZE_WIDTH-1:0] write_cmd_size     = '{default:0};
     logic                  write_cmd_valid    = 1'b0;
 
+    logic [(AXI_DATA_WIDTH-1):0] axi_fifo_dout_data;
+    logic                        axi_fifo_dout_last;
+    logic                        axi_fifo_rden     ;
+    logic                        axi_fifo_empty    ;
+
+    logic [7:0] word_counter = '{default:0};
+    logic [1:0] byte_counter = '{default:0};
 
     always_ff @(posedge i_clk) begin : current_state_processing 
         if (~i_resetn) begin 
@@ -95,15 +89,15 @@ module axi_ssd1306_core #(
 
                 AWAIT_DATA_ST : 
                     if (!axi_fifo_empty) begin 
-                        current_state <= TX_SET_SEGMENT_ADDRESS_ST;
+                        current_state <= TX_CMD_SET_SEGMENT_ADDRESS_ST;
                     end else begin 
                         current_state <= current_state;
                     end 
 
-                TX_SET_SEGMENT_ADDRESS_ST : 
+                TX_CMD_SET_SEGMENT_ADDRESS_ST : 
                     if (s_axis_tready) begin 
                         if (word_counter == 1) begin 
-                            current_state <= TX_CMD_DATA_ST;
+                            current_state <= TX_CMD_SET_DATA_ST;
                         end else begin 
                             current_state <= current_state;
                         end 
@@ -111,8 +105,7 @@ module axi_ssd1306_core #(
                         current_state <= current_state;
                     end 
 
-
-                TX_CMD_DATA_ST : 
+                TX_CMD_SET_DATA_ST : 
                     if (s_axis_tready) begin 
                         current_state <= TX_DATA_ST;
                     end else begin 
@@ -120,18 +113,20 @@ module axi_ssd1306_core #(
                     end 
 
                 TX_DATA_ST : 
-                    if (s_axis_tready & s_axis_tvalid & s_axis_tlast) begin 
-                        current_state <= INCREMENT_SEGMENT_ADDRESS_ST;
+                    if (s_axis_tready) begin 
+                        if (word_counter == 127) begin 
+                            if (byte_counter == 3) begin 
+                                current_state <= STUB_ST;
+                            end else begin 
+                                current_state <= current_state;
+                            end 
+                        end else begin 
+                            current_state <= current_state;
+                        end 
                     end else begin 
                         current_state <= current_state;
                     end 
-
-                INCREMENT_SEGMENT_ADDRESS_ST: 
-                    if (segment_index == 7) begin 
-                        current_state <= IDLE_ST;
-                    end else begin 
-                        current_state <= TX_SET_SEGMENT_ADDRESS_ST;
-                    end 
+                    
 
                 default : 
                     current_state <= current_state;
@@ -143,9 +138,13 @@ module axi_ssd1306_core #(
 
     always_ff @(posedge i_clk) begin : word_counter_processing 
         case (current_state)
-            TX_SET_SEGMENT_ADDRESS_ST : 
+            TX_CMD_SET_SEGMENT_ADDRESS_ST : 
                 if (s_axis_tready) begin 
-                    word_counter <= word_counter + 1;
+                    if (word_counter == 1) begin 
+                        word_counter <= '{default:0};
+                    end else begin 
+                        word_counter <= word_counter + 1;
+                    end 
                 end else begin 
                     word_counter <= word_counter;
                 end 
@@ -159,7 +158,21 @@ module axi_ssd1306_core #(
 
             default : 
                 word_counter <= '{default:0};
+        endcase // current_state
+    end 
 
+
+    always_ff @(posedge i_clk) begin : byte_counter_processing 
+        case (current_state)
+            TX_DATA_ST : 
+                if (s_axis_tready) begin 
+                    byte_counter <= byte_counter + 1;
+                end else begin 
+                    byte_counter <= byte_counter;
+                end 
+
+            default : 
+                byte_counter <= '{default:0};
         endcase // current_state
     end 
 
@@ -200,11 +213,6 @@ module axi_ssd1306_core #(
     end 
 
 
-    logic [(AXI_DATA_WIDTH-1):0] axi_fifo_dout_data;
-    logic                        axi_fifo_dout_last;
-    logic                        axi_fifo_rden     ;
-    logic                        axi_fifo_empty    ;
-
 
     mp_xpm_fifo_in_sync #(
         .MEMTYPE    ("block"       ),
@@ -240,18 +248,178 @@ module axi_ssd1306_core #(
         .o_dout_user    (                  ),
         .o_dout_last    (axi_fifo_dout_last),
         .i_rden         (axi_fifo_rden     ),
-        .o_empty        (axi_fifo_empty    )
-        //
-    );
+        .o_empty        (axi_fifo_empty    ));
 
-    always_comb axi_fifo_rden = (data_index == 2'b11) & s_axis_tready;
+    always_ff @(posedge i_clk) begin : axi_fifo_rden_processing 
+        axi_fifo_rden <= 1'b0;
+    end 
+
+    always_ff @(posedge i_clk) begin : s_axis_tdata_processing 
+        case (current_state)
+
+            TX_CMD_SET_SEGMENT_ADDRESS_ST : 
+                if (s_axis_tready) begin 
+                    case (word_counter)
+                        0 : s_axis_tdata <= 8'h00;
+                        1 : s_axis_tdata <= 8'hb0;
+                        default : s_axis_tdata <= 8'hxx;
+                    endcase // word_counter
+                end else begin 
+                    s_axis_tdata <= s_axis_tdata;
+                end     
+
+            TX_CMD_SET_DATA_ST : 
+                if (s_axis_tready) begin 
+                    s_axis_tdata <= 8'hC0;
+                end else begin  
+                    s_axis_tdata <= s_axis_tdata;
+                end 
+
+            TX_DATA_ST : 
+                if (s_axis_tready) begin 
+                    case (byte_counter)
+                        2'b00 : s_axis_tdata <= axi_fifo_dout_data[ 7: 0];
+                        2'b01 : s_axis_tdata <= axi_fifo_dout_data[15: 8];
+                        2'b10 : s_axis_tdata <= axi_fifo_dout_data[23:16];
+                        2'b11 : s_axis_tdata <= axi_fifo_dout_data[31:24];
+                        default : s_axis_tdata <= s_axis_tdata;
+                    endcase // byte_counter
+                end else begin 
+                    s_axis_tdata <= s_axis_tdata;
+                end 
+
+            default : 
+                s_axis_tdata <= s_axis_tdata;
+
+        endcase 
+    end 
+
+    always_ff @(posedge i_clk) begin : s_axis_tlast_processing 
+        case (current_state)
+            TX_CMD_SET_SEGMENT_ADDRESS_ST: 
+                if (s_axis_tready)
+                    case (word_counter)
+                        1 : s_axis_tlast <= 1'b1;
+                        default : s_axis_tlast <= 1'b0;
+                    endcase // word_counter
+
+            TX_CMD_SET_DATA_ST : 
+                if (s_axis_tready) begin 
+                    s_axis_tlast <= 1'b0;
+                end else begin 
+                    s_axis_tlast <= s_axis_tlast;
+                end 
+
+            TX_DATA_ST : 
+                if (s_axis_tready) begin 
+                    if (word_counter == 127) begin 
+                        s_axis_tlast <= 1'b1;
+                    end else begin 
+                        s_axis_tlast <= 1'b0;
+                    end 
+                end else begin 
+                    s_axis_tlast <= s_axis_tlast;
+                end 
+
+            default : 
+                s_axis_tlast <= s_axis_tlast;
+                
+        endcase // current_state
+    end 
+
+
+    always_ff @(posedge i_clk) begin : s_axis_tvalid_processing 
+        case (current_state)
+            TX_CMD_SET_SEGMENT_ADDRESS_ST : 
+                s_axis_tvalid <= 1'b1;
+
+            TX_CMD_SET_DATA_ST: 
+                s_axis_tvalid <= 1'b1;
+
+            TX_DATA_ST : 
+                s_axis_tvalid <= 1'b1;
+
+            STUB_ST : 
+                if (s_axis_tready) begin 
+                    s_axis_tvalid <= 1'b0;
+                end else begin 
+                    s_axis_tvalid <= s_axis_tvalid;
+                end 
+
+            default : 
+                s_axis_tvalid <= 1'b0;
+
+        endcase // current_state
+    end 
+
+
+    always_ff @(posedge i_clk) begin : write_cmd_iic_addr_processing 
+        case (current_state)
+
+            IDLE_ST : write_cmd_iic_addr <= {i_cmd_iic_address, 1'b0};
+
+            default : write_cmd_iic_addr <= write_cmd_iic_addr;
+        endcase // current_state
+    end 
+
+
+    always_ff @(posedge i_clk) begin : write_cmd_size_processing 
+        case (current_state)
+            TX_CMD_SET_SEGMENT_ADDRESS_ST : 
+                if (s_axis_tready) begin 
+                    if (word_counter == 1) begin 
+                        write_cmd_size <= 8'h02;
+                    end else begin 
+                        write_cmd_size <= write_cmd_size;
+                    end 
+                end else begin 
+                    write_cmd_size <= write_cmd_size;
+                end 
+
+            TX_CMD_SET_DATA_ST : 
+                if (s_axis_tready) begin 
+                    write_cmd_size <= 8'h81;
+                end else begin 
+                    write_cmd_size <= write_cmd_size;
+                end 
+
+            default : 
+                write_cmd_size <= 8'hxx;
+        endcase // current_state_processing
+    end 
+
+
+    always_ff @(posedge i_clk) begin : write_cmd_valid_processing 
+        case (current_state)
+            TX_CMD_SET_SEGMENT_ADDRESS_ST : 
+                if (s_axis_tready) begin 
+                    if (word_counter == 1) begin 
+                        write_cmd_valid <= 1'b1;
+                    end else begin 
+                        write_cmd_valid <= 1'b0;
+                    end 
+                end else begin 
+                    write_cmd_valid <= 1'b0;
+                end 
+
+            TX_CMD_SET_DATA_ST : 
+                if (s_axis_tready) begin 
+                    write_cmd_valid <= 1'b1;
+                end else begin 
+                    write_cmd_valid <= 1'b0;
+                end 
+
+            default : 
+                write_cmd_valid <= 1'b0;
+        endcase // current_state
+    end 
 
 
     axis_iic_bridge_cmd #(
         .CLK_PERIOD    (CLK_PERIOD     ),
         .CLK_I2C_PERIOD(CLK_I2C_PERIOD ),
         .DATA_WIDTH    (AXIS_DATA_WIDTH),
-        .DEPTH         (DEPTH          ),
+        .DEPTH         (AXIS_DEPTH     ),
         .SIZE_WIDTH    (SIZE_WIDTH     )
     ) axis_iic_bridge_cmd_inst (
         .i_clk               (i_clk             ),
@@ -283,168 +451,5 @@ module axi_ssd1306_core #(
         .o_sda_t             (o_sda_t           )
     );
 
-    always_ff @(posedge i_clk) begin : write_cmd_iic_addr_processing 
-        case (current_state)
-            
-            IDLE_ST : 
-                write_cmd_iic_addr <= {i_cmd_iic_address, 1'b0};
-            
-            default : 
-                write_cmd_iic_addr <= write_cmd_iic_addr;
-
-        endcase // current_state
-    end 
-
-
-
-    always_ff @(posedge i_clk) begin : write_cmd_processing 
-        case (current_state)
-            TX_SET_SEGMENT_ADDRESS_ST : begin 
-                if (s_axis_tready) begin 
-                    if (word_counter == 0) begin 
-                        write_cmd_size <= 8'h02; write_cmd_valid <= 1'b1;
-                    end else begin 
-                        write_cmd_size <= write_cmd_size; write_cmd_valid <= 1'b0;
-                    end 
-                end else begin 
-                    write_cmd_size <= write_cmd_size; write_cmd_valid <= 1'b0;
-                end 
-            end 
-
-            TX_CMD_DATA_ST : begin 
-                if (s_axis_tready) begin 
-                    write_cmd_size <= 8'h81; write_cmd_valid <= 1'b1;   
-                end else begin 
-                    write_cmd_size <= write_cmd_size; write_cmd_valid <= 1'b0;
-                end 
-            end 
-
-            default : begin write_cmd_size <= 8'h00; write_cmd_valid <= 1'b0; end
-        endcase // current_state
-    end 
-
-
-
-    always_ff @(posedge i_clk) begin : s_axis_tdata_processing 
-        case (current_state)
-
-            TX_SET_SEGMENT_ADDRESS_ST : 
-                case (word_counter)
-                    'd0 : s_axis_tdata <= 8'h00;
-                    'd1 : s_axis_tdata <= 8'hB0 + segment_index;
-                    default : s_axis_tdata <= s_axis_tdata;
-                endcase // word_counter
-
-            TX_CMD_DATA_ST : 
-                s_axis_tdata <= 8'hC0;
-
-            TX_DATA_ST : 
-                if (s_axis_tready) begin 
-                    case (data_index) 
-                        2'b00   : s_axis_tdata <= axi_fifo_dout_data[ 7: 0];
-                        2'b01   : s_axis_tdata <= axi_fifo_dout_data[15: 8];
-                        2'b10   : s_axis_tdata <= axi_fifo_dout_data[23:16];
-                        2'b11   : s_axis_tdata <= axi_fifo_dout_data[31:24];
-                        default : s_axis_tdata <= s_axis_tdata;
-                    endcase // data_index
-                end else begin 
-                    s_axis_tdata <= s_axis_tdata;
-                end 
-
-            default : s_axis_tdata <= s_axis_tdata;
-        endcase
-    end 
-
-
-    always_ff @(posedge i_clk) begin : s_axis_tvalid_processing 
-        case (current_state)
-
-            TX_SET_SEGMENT_ADDRESS_ST : 
-                if (s_axis_tready) begin 
-                    if (s_axis_tlast) begin 
-                        s_axis_tvalid <= 1'b0;
-                    end else begin 
-                        s_axis_tvalid <= 1'b1;
-                    end 
-                end else begin 
-                    s_axis_tvalid <= 1'b1;
-                end 
-
-            TX_CMD_DATA_ST : 
-                s_axis_tvalid <= 1'b1;
-
-            TX_DATA_ST : 
-                if (s_axis_tready) begin 
-                    if (s_axis_tlast) begin 
-                        s_axis_tvalid <= 1'b0;
-                    end else begin 
-                        s_axis_tvalid <= 1'b1;
-                    end 
-                end else begin 
-                    s_axis_tvalid <= s_axis_tvalid;
-                end 
-
-
-            default : 
-                s_axis_tvalid <= 1'b0;
-
-        endcase // current_state
-    end 
-
-
-    always_ff @(posedge i_clk) begin : s_axis_tlast_processing 
-        case (current_state)
-
-            TX_SET_SEGMENT_ADDRESS_ST :
-                if (word_counter == 1) begin 
-                    s_axis_tlast <= 1'b1;
-                end else begin 
-                    s_axis_tlast <= 1'b0;
-                end 
-
-            TX_DATA_ST : 
-                if (s_axis_tready) begin 
-                    if (word_counter == 127) begin 
-                        s_axis_tlast <= 1'b1;
-                    end else begin 
-                        s_axis_tlast <= 1'b0;
-                    end 
-                end else begin 
-                    s_axis_tlast <= s_axis_tlast;
-                end 
-
-            default : 
-                s_axis_tlast <= 1'b0;
-
-        endcase // current_state
-    end 
-
-
-    always_ff @(posedge i_clk) begin : data_index_processing 
-        case (current_state)
-            TX_DATA_ST : 
-                if (s_axis_tready & s_axis_tvalid) begin 
-                    data_index <= data_index + 1;
-                end else begin 
-                    data_index <= data_index;
-                end 
-
-            default : 
-                data_index <= '{default:0};
-
-        endcase
-    end 
-
-
-    always_ff @(posedge i_clk) begin : segment_index_processing 
-        case (current_state)
-            INCREMENT_SEGMENT_ADDRESS_ST : 
-                segment_index <= segment_index + 1;
-
-            default : 
-                segment_index <= segment_index;
-
-        endcase // current_state
-    end 
 
 endmodule
