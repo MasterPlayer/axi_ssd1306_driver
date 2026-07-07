@@ -44,6 +44,7 @@ module axi_ssd1306_core #(
         TX_CMD_SET_SEGMENT_ADDRESS_ST,
         TX_CMD_SET_DATA_ST,
         TX_DATA_ST, 
+        CHECK_SEGMENT_ADDRESS_ST,
 
         STUB_ST
     } fsm;
@@ -66,6 +67,8 @@ module axi_ssd1306_core #(
 
     logic [7:0] word_counter = '{default:0};
     logic [1:0] byte_counter = '{default:0};
+
+    logic [7:0] segment_address = 8'hb0;
 
     always_ff @(posedge i_clk) begin : current_state_processing 
         if (~i_resetn) begin 
@@ -116,7 +119,7 @@ module axi_ssd1306_core #(
                     if (s_axis_tready) begin 
                         if (word_counter == 127) begin 
                             if (byte_counter == 3) begin 
-                                current_state <= STUB_ST;
+                                current_state <= CHECK_SEGMENT_ADDRESS_ST;
                             end else begin 
                                 current_state <= current_state;
                             end 
@@ -127,6 +130,16 @@ module axi_ssd1306_core #(
                         current_state <= current_state;
                     end 
                     
+                CHECK_SEGMENT_ADDRESS_ST :
+                    if (s_axis_tready) begin 
+                        if (segment_address == 8'hb7) begin 
+                            current_state <= IDLE_ST;
+                        end else begin 
+                            current_state <= TX_CMD_SET_SEGMENT_ADDRESS_ST;
+                        end 
+                    end else begin 
+                        current_state <= current_state;
+                    end 
 
                 default : 
                     current_state <= current_state;
@@ -250,9 +263,8 @@ module axi_ssd1306_core #(
         .i_rden         (axi_fifo_rden     ),
         .o_empty        (axi_fifo_empty    ));
 
-    always_ff @(posedge i_clk) begin : axi_fifo_rden_processing 
-        axi_fifo_rden <= 1'b0;
-    end 
+    always_comb axi_fifo_rden = s_axis_tready & (byte_counter == 3);
+
 
     always_ff @(posedge i_clk) begin : s_axis_tdata_processing 
         case (current_state)
@@ -261,7 +273,7 @@ module axi_ssd1306_core #(
                 if (s_axis_tready) begin 
                     case (word_counter)
                         0 : s_axis_tdata <= 8'h00;
-                        1 : s_axis_tdata <= 8'hb0;
+                        1 : s_axis_tdata <= segment_address;
                         default : s_axis_tdata <= 8'hxx;
                     endcase // word_counter
                 end else begin 
@@ -294,6 +306,7 @@ module axi_ssd1306_core #(
         endcase 
     end 
 
+
     always_ff @(posedge i_clk) begin : s_axis_tlast_processing 
         case (current_state)
             TX_CMD_SET_SEGMENT_ADDRESS_ST: 
@@ -321,9 +334,16 @@ module axi_ssd1306_core #(
                     s_axis_tlast <= s_axis_tlast;
                 end 
 
+            CHECK_SEGMENT_ADDRESS_ST : 
+                if (s_axis_tready) begin 
+                    s_axis_tlast <= 1'b0;
+                end else begin 
+                    s_axis_tlast <= s_axis_tlast;
+                end 
+
             default : 
                 s_axis_tlast <= s_axis_tlast;
-                
+
         endcase // current_state
     end 
 
@@ -338,6 +358,13 @@ module axi_ssd1306_core #(
 
             TX_DATA_ST : 
                 s_axis_tvalid <= 1'b1;
+
+            CHECK_SEGMENT_ADDRESS_ST : 
+                if (s_axis_tready) begin 
+                    s_axis_tvalid <= 1'b0;
+                end else begin 
+                    s_axis_tvalid <= s_axis_tvalid;
+                end 
 
             STUB_ST : 
                 if (s_axis_tready) begin 
@@ -411,6 +438,25 @@ module axi_ssd1306_core #(
 
             default : 
                 write_cmd_valid <= 1'b0;
+        endcase // current_state
+    end 
+
+
+    always_ff @(posedge i_clk) begin : segment_address_processing 
+        case (current_state)
+
+            IDLE_ST : 
+                segment_address <= 8'hb0;
+            
+            CHECK_SEGMENT_ADDRESS_ST :
+                if (s_axis_tready) begin 
+                    segment_address <= segment_address + 1;
+                end else begin 
+                    segment_address <= segment_address;
+                end         
+
+            default : 
+                segment_address <= segment_address;
         endcase // current_state
     end 
 
