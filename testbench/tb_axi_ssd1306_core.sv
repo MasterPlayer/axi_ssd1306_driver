@@ -132,6 +132,19 @@ module tb_axi_ssd1306_core ();
     logic        s_axi_bvalid                ;
     logic        s_axi_bready  = 1'b0        ;
 
+    logic [31:0] s_axi_araddr  = '{default:0};
+    logic [ 7:0] s_axi_arlen   = 8'hFF       ;
+    logic [ 2:0] s_axi_arsize  = 3'b010      ;
+    logic [ 1:0] s_axi_arburst = 3'b010      ;
+    logic        s_axi_arvalid = 1'b0        ;
+    logic        s_axi_arready               ;
+    logic [ 0:0] s_axi_rid                   ;
+    logic [31:0] s_axi_rdata                 ;
+    logic [ 1:0] s_axi_rresp                 ;
+    logic        s_axi_rlast                 ;
+    logic        s_axi_rvalid                ;
+    logic        s_axi_rready = 1'b0         ;
+
     always_ff @(posedge i_clk) begin : write_processing 
         case (index)
             1000    : begin s_axi_awaddr <= 32'h00000000; s_axi_awvalid <= 1'b1; s_axi_wdata <= 32'h030201FF; s_axi_wvalid <= 1'b1; s_axi_wlast <= 1'b0; s_axi_bready <= 1'b0; end
@@ -394,9 +407,85 @@ module tb_axi_ssd1306_core ();
             1257    : begin s_axi_awaddr <= 32'h00000000; s_axi_awvalid <= 1'b0; s_axi_wdata <= 32'h000000ff; s_axi_wvalid <= 1'b0; s_axi_wlast <= 1'b0; s_axi_bready <= 1'b1; end
             1258    : begin s_axi_awaddr <= 32'h00000000; s_axi_awvalid <= 1'b0; s_axi_wdata <= 32'h000000ff; s_axi_wvalid <= 1'b0; s_axi_wlast <= 1'b0; s_axi_bready <= 1'b1; end
             default : begin s_axi_awaddr <= 32'h00000000; s_axi_awvalid <= 1'b0; s_axi_wdata <= 32'h00000000; s_axi_wvalid <= 1'b0; s_axi_wlast <= 1'b0; s_axi_bready <= 1'b0; end
-
         endcase
     end 
+
+
+
+    always_ff @(posedge i_clk) begin 
+        case (index)
+            2000    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b1; s_axi_rready <= 1'b1; end 
+            2001    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b1; s_axi_rready <= 1'b1; end 
+            2002    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2003    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2004    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2005    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2006    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2007    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2008    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2009    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2010    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2011    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2012    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2013    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2014    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2015    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2016    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2017    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2018    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2019    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2020    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2021    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2022    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2023    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2024    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2025    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2026    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2027    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2028    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2029    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2030    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2031    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2032    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2033    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2034    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2035    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2036    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2037    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2038    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2039    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2040    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2041    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2042    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2043    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2044    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2045    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2046    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2047    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2048    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2049    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2050    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2051    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2052    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2053    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2054    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2055    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2056    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2057    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2058    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2059    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2060    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2061    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2062    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2063    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2064    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2065    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2066    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
+            2067    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b0; end 
+            default : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b0; end 
+        endcase
+    end 
+
 
     blk_mem_gen_0 blk_mem_gen_0_inst (
         .rsta_busy    (             ),   // output wire rsta_busy
@@ -420,19 +509,284 @@ module tb_axi_ssd1306_core ();
         .s_axi_bvalid (s_axi_bvalid ),   // output wire s_axi_bvalid
         .s_axi_bready (s_axi_bready ),   // input wire s_axi_bready
         .s_axi_arid   (1'b0         ),   // input wire [0 : 0] s_axi_arid
-        .s_axi_araddr (axi_araddr   ),   // input wire [31 : 0] s_axi_araddr
-        .s_axi_arlen  (axi_arlen    ),   // input wire [7 : 0] s_axi_arlen
-        .s_axi_arsize (axi_arsize   ),   // input wire [2 : 0] s_axi_arsize
-        .s_axi_arburst(axi_arburst  ),   // input wire [1 : 0] s_axi_arburst
-        .s_axi_arvalid(axi_arvalid  ),   // input wire s_axi_arvalid
-        .s_axi_arready(axi_arready  ),   // output wire s_axi_arready
+        .s_axi_araddr (s_axi_araddr ),   // input wire [31 : 0] s_axi_araddr
+        .s_axi_arlen  (s_axi_arlen  ),   // input wire [7 : 0] s_axi_arlen
+        .s_axi_arsize (s_axi_arsize ),   // input wire [2 : 0] s_axi_arsize
+        .s_axi_arburst(s_axi_arburst),   // input wire [1 : 0] s_axi_arburst
+        .s_axi_arvalid(s_axi_arvalid),   // input wire s_axi_arvalid
+        .s_axi_arready(s_axi_arready),   // output wire s_axi_arready
         .s_axi_rid    (             ),   // output wire [0 : 0] s_axi_rid
-        .s_axi_rdata  (axi_rdata    ),   // output wire [31 : 0] s_axi_rdata
-        .s_axi_rresp  (axi_rresp    ),   // output wire [1 : 0] s_axi_rresp
-        .s_axi_rlast  (axi_rlast    ),   // output wire s_axi_rlast
-        .s_axi_rvalid (axi_rvalid   ),   // output wire s_axi_rvalid
-        .s_axi_rready (axi_rready   )    // input wire s_axi_rready
+        .s_axi_rdata  (s_axi_rdata  ),   // output wire [31 : 0] s_axi_rdata
+        .s_axi_rresp  (s_axi_rresp  ),   // output wire [1 : 0] s_axi_rresp
+        .s_axi_rlast  (s_axi_rlast  ),   // output wire s_axi_rlast
+        .s_axi_rvalid (s_axi_rvalid ),   // output wire s_axi_rvalid
+        .s_axi_rready (s_axi_rready )    // input wire s_axi_rready
     );
+
+
+    parameter integer C_S_AXI_ID_WIDTH     = 1 ;
+    parameter integer C_S_AXI_DATA_WIDTH   = 32;
+    parameter integer C_S_AXI_ADDR_WIDTH   = 8 ;
+    parameter integer C_S_AXI_AWUSER_WIDTH = 0 ;
+    parameter integer C_S_AXI_ARUSER_WIDTH = 0 ;
+    parameter integer C_S_AXI_WUSER_WIDTH  = 0 ;
+    parameter integer C_S_AXI_RUSER_WIDTH  = 0 ;
+    parameter integer C_S_AXI_BUSER_WIDTH  = 0 ;
+
+
+    logic [      C_S_AXI_ID_WIDTH-1:0] i_axi_awid     = '{default:0};
+    logic [    C_S_AXI_ADDR_WIDTH-1:0] i_axi_awaddr   = '{default:0};
+    logic [                       7:0] i_axi_awlen    = 8'h3F       ;
+    logic [                       2:0] i_axi_awsize   = 3'b010      ;
+    logic [                       1:0] i_axi_awburst  = 2'b01       ;
+    logic                              i_axi_awlock                 ;
+    logic [                       3:0] i_axi_awcache                ;
+    logic [                       2:0] i_axi_awprot                 ;
+    logic [                       3:0] i_axi_awqos                  ;
+    logic [                       3:0] i_axi_awregion               ;
+    logic [  C_S_AXI_AWUSER_WIDTH-1:0] i_axi_awuser   = '{default:0};
+    logic                              i_axi_awvalid  = 1'b0        ;
+    logic                              o_axi_awready                ;
+    logic [    C_S_AXI_DATA_WIDTH-1:0] i_axi_wdata    = '{default:0};
+    logic [(C_S_AXI_DATA_WIDTH/8)-1:0] i_axi_wstrb    = 4'hF        ;
+    logic                              i_axi_wlast    = 1'b0        ;
+    logic [   C_S_AXI_WUSER_WIDTH-1:0] i_axi_wuser    = '{default:0};
+    logic                              i_axi_wvalid   = 1'b0        ;
+    logic                              o_axi_wready                 ;
+    logic [      C_S_AXI_ID_WIDTH-1:0] o_axi_bid                    ;
+    logic [                       1:0] o_axi_bresp                  ;
+    logic [   C_S_AXI_BUSER_WIDTH-1:0] o_axi_buser                  ;
+    logic                              o_axi_bvalid                 ;
+    logic                              i_axi_bready   = 1'b0        ;
+    logic [      C_S_AXI_ID_WIDTH-1:0] i_axi_arid                   ;
+    logic [    C_S_AXI_ADDR_WIDTH-1:0] i_axi_araddr                 ;
+    logic [                       7:0] i_axi_arlen    = 8'h3f       ;
+    logic [                       2:0] i_axi_arsize   = 3'b010      ;
+    logic [                       1:0] i_axi_arburst  = 2'b01       ;
+    logic                              i_axi_arlock                 ;
+    logic [                       3:0] i_axi_arcache                ;
+    logic [                       2:0] i_axi_arprot                 ;
+    logic [                       3:0] i_axi_arqos                  ;
+    logic [                       3:0] i_axi_arregion               ;
+    logic [  C_S_AXI_ARUSER_WIDTH-1:0] i_axi_aruser                 ;
+    logic                              i_axi_arvalid                ;
+    logic                              o_axi_arready                ;
+    logic [      C_S_AXI_ID_WIDTH-1:0] o_axi_rid                    ;
+    logic [    C_S_AXI_DATA_WIDTH-1:0] o_axi_rdata                  ;
+    logic [                       1:0] o_axi_rresp                  ;
+    logic                              o_axi_rlast                  ;
+    logic [   C_S_AXI_RUSER_WIDTH-1:0] o_axi_ruser                  ;
+    logic                              o_axi_rvalid                 ;
+    logic                              i_axi_rready                 ;
+
+    always_ff @(posedge i_clk) begin 
+        case (index)
+            1000    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b1; i_axi_wdata <= 32'h00000000; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1001    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b1; i_axi_wdata <= 32'h00000000; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1002    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h03020100; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1003    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h07060504; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1004    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h0b0a0908; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1005    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h0f0e0d0c; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1006    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h13121110; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1007    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h17161514; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1008    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h1b1a1918; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1009    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h1f1e1d1c; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1010    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h23222120; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1011    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h27262524; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1012    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h2b2a2928; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1013    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h2f2e2d2c; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1014    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h33323130; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1015    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h37363534; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1016    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h3b3a3938; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1017    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h3f3e3d3c; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1018    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h43424140; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1019    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h47464544; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1020    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h4b4a4948; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1021    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h4f4e4d4c; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1022    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h53525150; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1023    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h57565554; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1024    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h5b5a5958; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1025    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h5f5e5d5c; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1026    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h63626160; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1027    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h67666564; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1028    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h6b6a6968; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1029    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h6f6e6d6c; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1030    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h73727170; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1031    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h77767574; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1032    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h7b7a7978; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1033    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h7f7e7d7c; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1034    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h83828180; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1035    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h87868584; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1036    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h8b8a8988; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1037    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h8f8e8d8c; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1038    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h93929190; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1039    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h97969594; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1040    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h9b9a9998; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1041    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h9f9e9d9c; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1042    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hA3A2A1A0; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1043    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hA7A6A5A4; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1044    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hAbAaA9A8; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1045    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hAfAeAdAc; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1046    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hb3b2b1b0; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1047    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hb7b6b5b4; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1048    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hbbbab9b8; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1049    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hbfbebdbc; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1050    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hc3c2c1c0; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1051    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hc7c6c5c4; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1052    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hcbcac9c8; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1053    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hcfcecdcc; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1054    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hd3d2d1d0; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1055    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hd7d6d5d4; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1056    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hdbdad9d8; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1057    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hdfdedddc; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1058    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'he3e2e1e0; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1059    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'he7e6e5e4; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1060    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hebeae9e8; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1061    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hefeeedec; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1062    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hf3f2f1f0; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1063    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hf7f6f5f4; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1064    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hfbfaf9f8; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1065    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hfffefdfc; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b1; i_axi_bready <= 1'b0; end
+            1066    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hfffefdfc; i_axi_wvalid <= 1'b0; i_axi_wlast <= 1'b1; i_axi_bready <= 1'b1; end
+            default : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hfffefdfc; i_axi_wvalid <= 1'b0; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+        endcase
+    end 
+
+
+
+    always_ff @(posedge i_clk) begin 
+        case (index)
+            2000    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b1; i_axi_rready <= 1'b1; end 
+            2001    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b1; i_axi_rready <= 1'b1; end 
+            2002    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2003    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2004    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2005    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2006    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2007    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2008    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2009    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2010    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2011    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2012    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2013    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2014    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2015    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2016    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2017    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2018    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2019    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2020    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2021    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2022    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2023    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2024    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2025    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2026    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2027    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2028    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2029    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2030    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2031    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2032    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2033    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2034    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2035    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2036    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2037    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2038    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2039    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2040    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2041    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2042    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2043    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2044    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2045    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2046    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2047    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2048    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2049    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2050    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2051    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2052    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2053    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2054    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2055    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2056    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2057    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2058    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2059    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2060    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2061    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2062    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2063    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2064    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2065    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2066    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
+            2067    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b0; end 
+            default : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b0; end 
+        endcase
+    end 
+
+
+    axi_ssd1306_ucode_processor #(
+        .C_S_AXI_ID_WIDTH       (C_S_AXI_ID_WIDTH       ),
+        .C_S_AXI_DATA_WIDTH     (C_S_AXI_DATA_WIDTH     ),
+        .C_S_AXI_ADDR_WIDTH     (C_S_AXI_ADDR_WIDTH     ),
+        .C_S_AXI_AWUSER_WIDTH   (C_S_AXI_AWUSER_WIDTH   ),
+        .C_S_AXI_ARUSER_WIDTH   (C_S_AXI_ARUSER_WIDTH   ),
+        .C_S_AXI_WUSER_WIDTH    (C_S_AXI_WUSER_WIDTH    ),
+        .C_S_AXI_RUSER_WIDTH    (C_S_AXI_RUSER_WIDTH    ),
+        .C_S_AXI_BUSER_WIDTH    (C_S_AXI_BUSER_WIDTH    ) 
+    ) axi_ssd1306_ucode_processor_inst (
+        .S_AXI_ACLK         ( i_clk          ),
+        .S_AXI_ARESETN      ( i_resetn       ),
+        .S_AXI_AWID         ( i_axi_awid     ),
+        .S_AXI_AWADDR       ( i_axi_awaddr   ),
+        .S_AXI_AWLEN        ( i_axi_awlen    ),
+        .S_AXI_AWSIZE       ( i_axi_awsize   ),
+        .S_AXI_AWBURST      ( i_axi_awburst  ),
+        .S_AXI_AWLOCK       ( i_axi_awlock   ),
+        .S_AXI_AWCACHE      ( i_axi_awcache  ),
+        .S_AXI_AWPROT       ( i_axi_awprot   ),
+        .S_AXI_AWQOS        ( i_axi_awqos    ),
+        .S_AXI_AWREGION     ( i_axi_awregion ),
+        .S_AXI_AWUSER       ( i_axi_awuser   ),
+        .S_AXI_AWVALID      ( i_axi_awvalid  ),
+        .S_AXI_AWREADY      ( o_axi_awready  ),
+        .S_AXI_WDATA        ( i_axi_wdata    ),
+        .S_AXI_WSTRB        ( i_axi_wstrb    ),
+        .S_AXI_WLAST        ( i_axi_wlast    ),
+        .S_AXI_WUSER        ( i_axi_wuser    ),
+        .S_AXI_WVALID       ( i_axi_wvalid   ),
+        .S_AXI_WREADY       ( o_axi_wready   ),
+        .S_AXI_BID          ( o_axi_bid      ),
+        .S_AXI_BRESP        ( o_axi_bresp    ),
+        .S_AXI_BUSER        ( o_axi_buser    ),
+        .S_AXI_BVALID       ( o_axi_bvalid   ),
+        .S_AXI_BREADY       ( i_axi_bready   ),
+        .S_AXI_ARID         ( i_axi_arid     ),
+        .S_AXI_ARADDR       ( i_axi_araddr   ),
+        .S_AXI_ARLEN        ( i_axi_arlen    ),
+        .S_AXI_ARSIZE       ( i_axi_arsize   ),
+        .S_AXI_ARBURST      ( i_axi_arburst  ),
+        .S_AXI_ARLOCK       ( i_axi_arlock   ),
+        .S_AXI_ARCACHE      ( i_axi_arcache  ),
+        .S_AXI_ARPROT       ( i_axi_arprot   ),
+        .S_AXI_ARQOS        ( i_axi_arqos    ),
+        .S_AXI_ARREGION     ( i_axi_arregion ),
+        .S_AXI_ARUSER       ( i_axi_aruser   ),
+        .S_AXI_ARVALID      ( i_axi_arvalid  ),
+        .S_AXI_ARREADY      ( o_axi_arready  ),
+        .S_AXI_RID          ( o_axi_rid      ),
+        .S_AXI_RDATA        ( o_axi_rdata    ),
+        .S_AXI_RRESP        ( o_axi_rresp    ),
+        .S_AXI_RLAST        ( o_axi_rlast    ),
+        .S_AXI_RUSER        ( o_axi_ruser    ),
+        .S_AXI_RVALID       ( o_axi_rvalid   ),
+        .S_AXI_RREADY       ( i_axi_rready   )
+    );
+
 
 
 
