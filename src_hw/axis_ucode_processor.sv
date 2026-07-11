@@ -74,17 +74,25 @@ module axis_ucode_processor #(
                     end 
 
                 PERFORM_OPERATION_ST : 
-                    if (size) begin 
-                        current_state <= current_state;
+                    if (i_s_axis_tready) begin
+                        if (size) begin 
+                            current_state <= current_state;
+                        end else begin 
+                            current_state <= INC_PTR_ST;
+                        end 
                     end else begin 
-                        current_state <= INC_PTR_ST;
+                        current_state <= current_state;
                     end 
 
                 INC_PTR_ST : 
-                    if (o_addr == 6'h3F) begin 
-                        current_state <= IDLE_ST;
+                    if (i_s_axis_tready) begin 
+                        if (o_addr == 6'h3F) begin 
+                            current_state <= IDLE_ST;
+                        end else begin 
+                            current_state <= READ_ST;
+                        end 
                     end else begin 
-                        current_state <= READ_ST;
+                        current_state <= current_state;
                     end 
 
                 default : 
@@ -102,7 +110,11 @@ module axis_ucode_processor #(
                 o_addr <= '{default:0};
 
             INC_PTR_ST : 
-                o_addr <= o_addr + 1;
+                if (i_s_axis_tready) begin 
+                    o_addr <= o_addr + 1;
+                end else begin 
+                    o_addr <= o_addr;
+                end 
 
             default : 
                 o_addr <= o_addr;
@@ -136,7 +148,11 @@ module axis_ucode_processor #(
                 size <= i_din[25:24];
 
             PERFORM_OPERATION_ST : 
-                size <= size - 1;
+                if (i_s_axis_tready) begin 
+                    size <= size - 1;
+                end else begin 
+                    size <= size;
+                end 
 
             default : 
                 size <= size; 
@@ -163,7 +179,11 @@ module axis_ucode_processor #(
                 shift_register_data <= i_din[31:0];
 
             PERFORM_OPERATION_ST : 
-                shift_register_data[23:0] <= shift_register_data[31:8]; 
+                if (i_s_axis_tready) begin
+                    shift_register_data[23:0] <= shift_register_data[31:8]; 
+                end else begin 
+                    shift_register_data[23:0] <= shift_register_data[23:0];
+                end 
 
             default : 
                 shift_register_data <= shift_register_data;
@@ -175,7 +195,11 @@ module axis_ucode_processor #(
         case (current_state) 
 
             PERFORM_OPERATION_ST : 
-                o_s_axis_tdata <= shift_register_data[7:0];
+                if (i_s_axis_tready) begin 
+                    o_s_axis_tdata <= shift_register_data[7:0];
+                end else begin 
+                    o_s_axis_tdata <= o_s_axis_tdata;
+                end 
 
             default : 
                 o_s_axis_tdata <= o_s_axis_tdata;
@@ -188,12 +212,15 @@ module axis_ucode_processor #(
 
     always_ff @(posedge i_clk) begin : o_s_axis_tvalid_processing 
         case (current_state) 
-
             PERFORM_OPERATION_ST : 
-                if (size) begin 
-                    o_s_axis_tvalid <= 1'b1;
+                if (i_s_axis_tready) begin 
+                    if (size) begin 
+                        o_s_axis_tvalid <= 1'b1;
+                    end else begin 
+                        o_s_axis_tvalid <= 1'b0;
+                    end 
                 end else begin 
-                    o_s_axis_tvalid <= 1'b0;
+                    o_s_axis_tvalid <= o_s_axis_tvalid;
                 end 
 
             default : 
@@ -217,7 +244,7 @@ module axis_ucode_processor #(
     always_ff @(posedge i_clk) begin : o_write_cmd_size_processing 
         case (current_state)
             DECODE_ST : 
-                o_write_cmd_size <= shift_register_data[25:24];
+                o_write_cmd_size <= i_din[25:24];
 
             default : 
                 o_write_cmd_size <= o_write_cmd_size;
@@ -228,8 +255,12 @@ module axis_ucode_processor #(
     always_ff @(posedge i_clk) begin : o_write_cmd_valid_processing 
         case (current_state)
             PERFORM_OPERATION_ST : 
-                if (size == 0) begin 
-                    o_write_cmd_valid <= 1'b1;
+                if (i_s_axis_tready) begin 
+                    if (size == 0) begin 
+                        o_write_cmd_valid <= 1'b1;
+                    end else begin 
+                        o_write_cmd_valid <= 1'b0;
+                    end 
                 end else begin 
                     o_write_cmd_valid <= 1'b0;
                 end 

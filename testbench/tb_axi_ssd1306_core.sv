@@ -23,6 +23,7 @@ module tb_axi_ssd1306_core ();
     logic [AXI_ADDR_WIDTH-1:0] i_cfg_axi_baseaddress = '{default:0};
     logic [               7:0] i_cfg_iic_address     = 8'h78       ;
     logic                      i_cfg_initialize      = 1'b0        ;
+    logic                      i_cfg_selector        = 1'b0        ;
     // interface to memory
     logic [AXI_ADDR_WIDTH-1:0] o_m_axi_araddr ;
     logic [               7:0] o_m_axi_arlen  ;
@@ -129,6 +130,7 @@ module tb_axi_ssd1306_core ();
         endcase
     end 
 
+
     always_ff @(posedge i_clk) begin : i_cfg_initialize_processing
         case (index)
             2000    : i_cfg_initialize <= 1'b1;
@@ -136,6 +138,13 @@ module tb_axi_ssd1306_core ();
         endcase
     end  
 
+
+    always_ff @(posedge i_clk) begin : i_cfg_iic_address_processing
+        case (index)
+            1000    : i_cfg_iic_address <= 8'h78;
+            default : i_cfg_iic_address <= i_cfg_iic_address;
+        endcase // index
+    end 
 
     axi_ssd1306_core #(
         .AXI_ADDR_WIDTH  (AXI_ADDR_WIDTH  ),
@@ -156,6 +165,7 @@ module tb_axi_ssd1306_core ();
         .i_cfg_axi_baseaddress(i_cfg_axi_baseaddress),
         .i_cfg_iic_address    (i_cfg_iic_address    ),
         .i_cfg_initialize     (i_cfg_initialize     ),
+        .i_cfg_selector       (i_cfg_selector       ),
         // interface to memory
         .o_m_axi_araddr       (o_m_axi_araddr       ),
         .o_m_axi_arlen        (o_m_axi_arlen        ),

@@ -20,6 +20,7 @@ module axi_ssd1306_core #(
     input  logic [      AXI_ADDR_WIDTH-1:0] i_cfg_axi_baseaddress,
     input  logic [                     7:0] i_cfg_iic_address    ,
     input  logic                            i_cfg_initialize     ,
+    input  logic                            i_cfg_selector       ,
     // interface to memory
     output logic [      AXI_ADDR_WIDTH-1:0] o_m_axi_araddr       ,
     output logic [                     7:0] o_m_axi_arlen        ,
@@ -105,6 +106,26 @@ module axi_ssd1306_core #(
     logic [           7:0] write_cmd_iic_addr = '{default:0};
     logic [SIZE_WIDTH-1:0] write_cmd_size     = '{default:0};
     logic                  write_cmd_valid    = 1'b0;
+
+
+    logic [(AXIS_DATA_WIDTH-1):0] s_axis_tdata_bridge ;
+    logic                         s_axis_tlast_bridge ;
+    logic                         s_axis_tvalid_bridge;
+    logic                         s_axis_tready_bridge;
+
+    logic [           7:0] write_cmd_iic_addr_bridge = '{default:0};
+    logic [SIZE_WIDTH-1:0] write_cmd_size_bridge     = '{default:0};
+    logic                  write_cmd_valid_bridge    = 1'b0        ;
+
+
+    logic [(AXIS_DATA_WIDTH-1):0] s_axis_tdata_ucode ;
+    logic                         s_axis_tlast_ucode ;
+    logic                         s_axis_tvalid_ucode;
+    logic                         s_axis_tready_ucode;
+
+    logic [           7:0] write_cmd_iic_addr_ucode = '{default:0};
+    logic [SIZE_WIDTH-1:0] write_cmd_size_ucode     = '{default:0};
+    logic                  write_cmd_valid_ucode    = 1'b0        ;
 
     logic [(AXI_DATA_WIDTH-1):0] axi_fifo_dout_data;
     logic                        axi_fifo_dout_last;
@@ -507,6 +528,10 @@ module axi_ssd1306_core #(
     end 
 
 
+
+
+
+
     axis_iic_bridge_cmd #(
         .CLK_PERIOD    (CLK_PERIOD     ),
         .CLK_I2C_PERIOD(CLK_I2C_PERIOD ),
@@ -514,33 +539,33 @@ module axi_ssd1306_core #(
         .DEPTH         (AXIS_DEPTH     ),
         .SIZE_WIDTH    (SIZE_WIDTH     )
     ) axis_iic_bridge_cmd_inst (
-        .i_clk               (i_clk             ),
-        .i_reset             (~i_resetn         ),
+        .i_clk               (i_clk                    ),
+        .i_reset             (~i_resetn                ),
         //
-        .i_write_cmd_iic_addr(write_cmd_iic_addr),
-        .i_write_cmd_size    (write_cmd_size    ),
-        .i_write_cmd_valid   (write_cmd_valid   ),
+        .i_write_cmd_iic_addr(write_cmd_iic_addr_bridge),
+        .i_write_cmd_size    (write_cmd_size_bridge    ),
+        .i_write_cmd_valid   (write_cmd_valid_bridge   ),
         //
-        .i_s_axis_tdata      (s_axis_tdata      ),
-        .i_s_axis_tkeep      (1'b1              ),
-        .i_s_axis_tlast      (s_axis_tlast      ),
-        .i_s_axis_tvalid     (s_axis_tvalid     ),
-        .o_s_axis_tready     (s_axis_tready     ),
+        .i_s_axis_tdata      (s_axis_tdata_bridge      ),
+        .i_s_axis_tkeep      (1'b1                     ),
+        .i_s_axis_tlast      (s_axis_tlast_bridge      ),
+        .i_s_axis_tvalid     (s_axis_tvalid_bridge     ),
+        .o_s_axis_tready     (s_axis_tready_bridge     ),
         //
-        .i_read_cmd_iic_addr ('0                ),
-        .i_read_cmd_size     ('0                ),
-        .i_read_cmd_valid    (1'b0              ),
+        .i_read_cmd_iic_addr ('0                       ),
+        .i_read_cmd_size     ('0                       ),
+        .i_read_cmd_valid    (1'b0                     ),
         //
-        .o_m_axis_tdata      (                  ),
-        .o_m_axis_tkeep      (                  ),
-        .o_m_axis_tlast      (                  ),
-        .o_m_axis_tvalid     (                  ),
-        .i_m_axis_tready     (1'b0              ),
+        .o_m_axis_tdata      (                         ),
+        .o_m_axis_tkeep      (                         ),
+        .o_m_axis_tlast      (                         ),
+        .o_m_axis_tvalid     (                         ),
+        .i_m_axis_tready     (1'b0                     ),
         //
-        .i_scl_i             (i_scl_i           ),
-        .i_sda_i             (i_sda_i           ),
-        .o_scl_t             (o_scl_t           ),
-        .o_sda_t             (o_sda_t           )
+        .i_scl_i             (i_scl_i                  ),
+        .i_sda_i             (i_sda_i                  ),
+        .o_scl_t             (o_scl_t                  ),
+        .o_sda_t             (o_sda_t                  )
     );
 
 
@@ -553,61 +578,99 @@ module axi_ssd1306_core #(
         .SIZE_WIDTH      (SIZE_WIDTH      ),
         .DATA_WIDTH      (AXIS_DATA_WIDTH )
     ) axi_ssd1306_ucode_processor_inst (
-        .i_clk               (i_clk            ),
-        .i_resetn            (i_resetn         ),
-        .i_cfg_initialize    (i_cfg_initialize ),
-        .i_cfg_iic_address   (i_cfg_iic_address),
+        .i_clk               (i_clk                   ),
+        .i_resetn            (i_resetn                ),
+        .i_cfg_initialize    (i_cfg_initialize        ),
+        .i_cfg_iic_address   (i_cfg_iic_address       ),
         ///
-        .o_write_cmd_iic_addr(                 ),
-        .o_write_cmd_size    (                 ),
-        .o_write_cmd_valid   (                 ),
+        .o_write_cmd_iic_addr(write_cmd_iic_addr_ucode),
+        .o_write_cmd_size    (write_cmd_size_ucode    ),
+        .o_write_cmd_valid   (write_cmd_valid_ucode   ),
         //
-        .o_s_axis_tdata      (                 ),
-        .o_s_axis_tlast      (                 ),
-        .o_s_axis_tvalid     (                 ),
-        .i_s_axis_tready     (                 ),
+        .o_s_axis_tdata      (s_axis_tdata_ucode      ),
+        .o_s_axis_tlast      (s_axis_tlast_ucode      ),
+        .o_s_axis_tvalid     (s_axis_tvalid_ucode     ),
+        .i_s_axis_tready     (s_axis_tready_ucode     ),
         // Configuration loading bus
-        .S_AXI_ACLK          (S_AXI_ACLK       ),
-        .S_AXI_ARESETN       (S_AXI_ARESETN    ),
-        .S_AXI_AWID          (S_AXI_AWID       ),
-        .S_AXI_AWADDR        (S_AXI_AWADDR     ),
-        .S_AXI_AWLEN         (S_AXI_AWLEN      ),
-        .S_AXI_AWSIZE        (S_AXI_AWSIZE     ),
-        .S_AXI_AWBURST       (S_AXI_AWBURST    ),
-        .S_AXI_AWLOCK        (S_AXI_AWLOCK     ),
-        .S_AXI_AWCACHE       (S_AXI_AWCACHE    ),
-        .S_AXI_AWPROT        (S_AXI_AWPROT     ),
-        .S_AXI_AWQOS         (S_AXI_AWQOS      ),
-        .S_AXI_AWREGION      (S_AXI_AWREGION   ),
-        .S_AXI_AWVALID       (S_AXI_AWVALID    ),
-        .S_AXI_AWREADY       (S_AXI_AWREADY    ),
-        .S_AXI_WDATA         (S_AXI_WDATA      ),
-        .S_AXI_WSTRB         (S_AXI_WSTRB      ),
-        .S_AXI_WLAST         (S_AXI_WLAST      ),
-        .S_AXI_WVALID        (S_AXI_WVALID     ),
-        .S_AXI_WREADY        (S_AXI_WREADY     ),
-        .S_AXI_BID           (S_AXI_BID        ),
-        .S_AXI_BRESP         (S_AXI_BRESP      ),
-        .S_AXI_BVALID        (S_AXI_BVALID     ),
-        .S_AXI_BREADY        (S_AXI_BREADY     ),
-        .S_AXI_ARID          (S_AXI_ARID       ),
-        .S_AXI_ARADDR        (S_AXI_ARADDR     ),
-        .S_AXI_ARLEN         (S_AXI_ARLEN      ),
-        .S_AXI_ARSIZE        (S_AXI_ARSIZE     ),
-        .S_AXI_ARBURST       (S_AXI_ARBURST    ),
-        .S_AXI_ARLOCK        (S_AXI_ARLOCK     ),
-        .S_AXI_ARCACHE       (S_AXI_ARCACHE    ),
-        .S_AXI_ARPROT        (S_AXI_ARPROT     ),
-        .S_AXI_ARQOS         (S_AXI_ARQOS      ),
-        .S_AXI_ARREGION      (S_AXI_ARREGION   ),
-        .S_AXI_ARVALID       (S_AXI_ARVALID    ),
-        .S_AXI_ARREADY       (S_AXI_ARREADY    ),
-        .S_AXI_RID           (S_AXI_RID        ),
-        .S_AXI_RDATA         (S_AXI_RDATA      ),
-        .S_AXI_RRESP         (S_AXI_RRESP      ),
-        .S_AXI_RLAST         (S_AXI_RLAST      ),
-        .S_AXI_RVALID        (S_AXI_RVALID     ),
-        .S_AXI_RREADY        (S_AXI_RREADY     )
+        .S_AXI_ACLK          (S_AXI_ACLK              ),
+        .S_AXI_ARESETN       (S_AXI_ARESETN           ),
+        .S_AXI_AWID          (S_AXI_AWID              ),
+        .S_AXI_AWADDR        (S_AXI_AWADDR            ),
+        .S_AXI_AWLEN         (S_AXI_AWLEN             ),
+        .S_AXI_AWSIZE        (S_AXI_AWSIZE            ),
+        .S_AXI_AWBURST       (S_AXI_AWBURST           ),
+        .S_AXI_AWLOCK        (S_AXI_AWLOCK            ),
+        .S_AXI_AWCACHE       (S_AXI_AWCACHE           ),
+        .S_AXI_AWPROT        (S_AXI_AWPROT            ),
+        .S_AXI_AWQOS         (S_AXI_AWQOS             ),
+        .S_AXI_AWREGION      (S_AXI_AWREGION          ),
+        .S_AXI_AWVALID       (S_AXI_AWVALID           ),
+        .S_AXI_AWREADY       (S_AXI_AWREADY           ),
+        .S_AXI_WDATA         (S_AXI_WDATA             ),
+        .S_AXI_WSTRB         (S_AXI_WSTRB             ),
+        .S_AXI_WLAST         (S_AXI_WLAST             ),
+        .S_AXI_WVALID        (S_AXI_WVALID            ),
+        .S_AXI_WREADY        (S_AXI_WREADY            ),
+        .S_AXI_BID           (S_AXI_BID               ),
+        .S_AXI_BRESP         (S_AXI_BRESP             ),
+        .S_AXI_BVALID        (S_AXI_BVALID            ),
+        .S_AXI_BREADY        (S_AXI_BREADY            ),
+        .S_AXI_ARID          (S_AXI_ARID              ),
+        .S_AXI_ARADDR        (S_AXI_ARADDR            ),
+        .S_AXI_ARLEN         (S_AXI_ARLEN             ),
+        .S_AXI_ARSIZE        (S_AXI_ARSIZE            ),
+        .S_AXI_ARBURST       (S_AXI_ARBURST           ),
+        .S_AXI_ARLOCK        (S_AXI_ARLOCK            ),
+        .S_AXI_ARCACHE       (S_AXI_ARCACHE           ),
+        .S_AXI_ARPROT        (S_AXI_ARPROT            ),
+        .S_AXI_ARQOS         (S_AXI_ARQOS             ),
+        .S_AXI_ARREGION      (S_AXI_ARREGION          ),
+        .S_AXI_ARVALID       (S_AXI_ARVALID           ),
+        .S_AXI_ARREADY       (S_AXI_ARREADY           ),
+        .S_AXI_RID           (S_AXI_RID               ),
+        .S_AXI_RDATA         (S_AXI_RDATA             ),
+        .S_AXI_RRESP         (S_AXI_RRESP             ),
+        .S_AXI_RLAST         (S_AXI_RLAST             ),
+        .S_AXI_RVALID        (S_AXI_RVALID            ),
+        .S_AXI_RREADY        (S_AXI_RREADY            )
     );
+
+
+    axis_ssd1306_mux #(
+        .SIZE_WIDTH(SIZE_WIDTH     ),
+        .DATA_WIDTH(AXIS_DATA_WIDTH)
+    ) axis_ssd1306_mux_inst (
+        .selector              (i_cfg_selector           ),
+        // data channel 0 : from ucode
+        .i_write_cmd_iic_addr_0(write_cmd_iic_addr_ucode ),
+        .i_write_cmd_size_0    (write_cmd_size_ucode     ),
+        .i_write_cmd_valid_0   (write_cmd_valid_ucode    ),
+        //
+        .i_s_axis_tdata_0      (s_axis_tdata_ucode       ),
+        .i_s_axis_tlast_0      (s_axis_tlast_ucode       ),
+        .i_s_axis_tvalid_0     (s_axis_tvalid_ucode      ),
+        .o_s_axis_tready_0     (s_axis_tready_ucode      ),
+        // data channel 1 : from internal logic
+        .i_write_cmd_iic_addr_1(write_cmd_iic_addr       ),
+        .i_write_cmd_size_1    (write_cmd_size           ),
+        .i_write_cmd_valid_1   (write_cmd_valid          ),
+        //
+        .i_s_axis_tdata_1      (s_axis_tdata             ),
+        .i_s_axis_tlast_1      (s_axis_tlast             ),
+        .i_s_axis_tvalid_1     (s_axis_tvalid            ),
+        .o_s_axis_tready_1     (s_axis_tready            ),
+        // to iic bridge
+        .o_write_cmd_iic_addr  (write_cmd_iic_addr_bridge),
+        .o_write_cmd_size      (write_cmd_size_bridge    ),
+        .o_write_cmd_valid     (write_cmd_valid_bridge   ),
+        //
+        .o_m_axis_tdata        (s_axis_tdata_bridge      ),
+        .o_m_axis_tlast        (s_axis_tlast_bridge      ),
+        .o_m_axis_tvalid       (s_axis_tvalid_bridge     ),
+        .i_m_axis_tready       (s_axis_tready_bridge     )
+        //
+    );
+
+
 
 endmodule
