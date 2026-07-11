@@ -414,8 +414,8 @@ module tb_axi_ssd1306_core ();
 
     always_ff @(posedge i_clk) begin 
         case (index)
-            2000    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b1; s_axi_rready <= 1'b1; end 
-            2001    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b1; s_axi_rready <= 1'b1; end 
+            // 2000    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b1; s_axi_rready <= 1'b1; end 
+            2001    : begin s_axi_araddr <= 32'h00000004; s_axi_arvalid <= 1'b1; s_axi_rready <= 1'b1; end 
             2002    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
             2003    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
             2004    : begin s_axi_araddr <= 32'h00000000; s_axi_arvalid <= 1'b0; s_axi_rready <= 1'b1; end 
@@ -581,74 +581,74 @@ module tb_axi_ssd1306_core ();
 
     always_ff @(posedge i_clk) begin 
         case (index)
-            1000    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b1; i_axi_wdata <= 32'h00000000; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1001    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b1; i_axi_wdata <= 32'h00000000; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1002    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h03020100; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1003    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h07060504; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1004    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h0b0a0908; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1005    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h0f0e0d0c; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1006    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h13121110; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1007    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h17161514; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1008    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h1b1a1918; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1009    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h1f1e1d1c; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1010    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h23222120; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1011    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h27262524; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1012    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h2b2a2928; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1013    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h2f2e2d2c; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1014    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h33323130; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1015    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h37363534; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1016    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h3b3a3938; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1017    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h3f3e3d3c; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1018    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h43424140; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1019    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h47464544; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1020    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h4b4a4948; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1021    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h4f4e4d4c; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1022    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h53525150; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1023    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h57565554; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1024    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h5b5a5958; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1025    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h5f5e5d5c; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1026    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h63626160; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1027    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h67666564; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1028    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h6b6a6968; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1029    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h6f6e6d6c; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1030    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h73727170; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1031    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h77767574; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1032    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h7b7a7978; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1033    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h7f7e7d7c; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1034    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h83828180; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1035    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h87868584; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1036    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h8b8a8988; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1037    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h8f8e8d8c; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1038    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h93929190; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1039    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h97969594; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1040    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h9b9a9998; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1041    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h9f9e9d9c; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1042    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hA3A2A1A0; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1043    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hA7A6A5A4; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1044    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hAbAaA9A8; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1045    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hAfAeAdAc; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1046    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hb3b2b1b0; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1047    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hb7b6b5b4; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1048    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hbbbab9b8; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1049    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hbfbebdbc; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1050    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hc3c2c1c0; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1051    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hc7c6c5c4; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1052    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hcbcac9c8; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1053    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hcfcecdcc; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1054    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hd3d2d1d0; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1055    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hd7d6d5d4; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1056    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hdbdad9d8; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1057    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hdfdedddc; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1058    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'he3e2e1e0; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1059    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'he7e6e5e4; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1060    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hebeae9e8; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1061    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hefeeedec; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1062    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hf3f2f1f0; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1063    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hf7f6f5f4; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1064    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hfbfaf9f8; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
-            1065    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hfffefdfc; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b1; i_axi_bready <= 1'b0; end
-            1066    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hfffefdfc; i_axi_wvalid <= 1'b0; i_axi_wlast <= 1'b1; i_axi_bready <= 1'b1; end
-            default : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hfffefdfc; i_axi_wvalid <= 1'b0; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1000    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b1; i_axi_wdata <= 32'h03020100; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1001    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b1; i_axi_wdata <= 32'h03020100; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1002    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b1; i_axi_wdata <= 32'h03020100; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1003    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h03020100; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1004    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h07060504; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1005    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h0b0a0908; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1006    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h0f0e0d0c; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1007    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h13121110; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1008    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h17161514; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1009    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h1b1a1918; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1010    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h1f1e1d1c; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1011    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h23222120; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1012    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h27262524; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1013    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h2b2a2928; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1014    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h2f2e2d2c; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1015    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h33323130; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1016    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h37363534; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1017    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h3b3a3938; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1018    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h3f3e3d3c; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1019    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h43424140; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1020    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h47464544; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1021    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h4b4a4948; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1022    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h4f4e4d4c; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1023    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h53525150; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1024    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h57565554; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1025    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h5b5a5958; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1026    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h5f5e5d5c; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1027    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h63626160; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1028    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h67666564; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1029    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h6b6a6968; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1030    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h6f6e6d6c; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1031    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h73727170; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1032    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h77767574; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1033    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h7b7a7978; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1034    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h7f7e7d7c; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1035    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h83828180; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1036    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h87868584; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1037    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h8b8a8988; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1038    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h8f8e8d8c; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1039    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h93929190; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1040    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h97969594; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1041    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h9b9a9998; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1042    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'h9f9e9d9c; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1043    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hA3A2A1A0; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1044    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hA7A6A5A4; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1045    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hAbAaA9A8; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1046    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hAfAeAdAc; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1047    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hb3b2b1b0; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1048    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hb7b6b5b4; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1049    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hbbbab9b8; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1050    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hbfbebdbc; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1051    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hc3c2c1c0; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1052    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hc7c6c5c4; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1053    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hcbcac9c8; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1054    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hcfcecdcc; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1055    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hd3d2d1d0; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1056    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hd7d6d5d4; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1057    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hdbdad9d8; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1058    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hdfdedddc; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1059    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'he3e2e1e0; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1060    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'he7e6e5e4; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1061    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hebeae9e8; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1062    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hefeeedec; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1063    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hf3f2f1f0; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1064    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hf7f6f5f4; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1065    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hfbfaf9f8; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b0; end
+            1066    : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hfffefdfc; i_axi_wvalid <= 1'b1; i_axi_wlast <= 1'b1; i_axi_bready <= 1'b0; end
+            default : begin i_axi_awaddr <= 32'h00000000; i_axi_awvalid <= 1'b0; i_axi_wdata <= 32'hfffefdfc; i_axi_wvalid <= 1'b0; i_axi_wlast <= 1'b0; i_axi_bready <= 1'b1; end
         endcase
     end 
 
@@ -656,75 +656,84 @@ module tb_axi_ssd1306_core ();
 
     always_ff @(posedge i_clk) begin 
         case (index)
-            2000    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b1; i_axi_rready <= 1'b1; end 
-            2001    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b1; i_axi_rready <= 1'b1; end 
-            2002    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2003    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2004    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2005    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2006    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2007    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2008    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2009    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2010    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2011    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2012    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2013    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2014    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2015    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2016    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2017    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2018    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2019    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2020    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2021    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2022    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2023    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2024    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2025    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2026    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2027    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2028    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2029    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2030    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2031    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2032    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2033    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2034    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2035    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2036    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2037    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2038    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2039    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2040    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2041    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2042    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2043    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2044    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2045    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2046    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2047    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2048    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2049    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2050    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2051    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2052    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2053    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2054    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2055    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2056    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2057    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2058    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2059    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2060    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2061    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2062    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2063    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2064    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2065    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2066    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; end 
-            2067    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b0; end 
-            default : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b0; end 
+            // 2000    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b1; i_axi_rready <= 1'b1; end 
+            2001    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b1; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2002    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b1; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2003    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2004    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2005    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2006    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2007    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2008    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2009    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2010    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2011    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2012    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2013    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2014    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2015    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2016    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2017    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2018    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2019    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2020    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2021    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2022    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2023    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2024    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2025    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2026    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2027    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2028    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2029    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2030    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2031    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2032    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2033    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2034    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2035    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2036    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2037    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2038    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2039    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2040    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2041    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2042    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2043    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2044    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2045    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2046    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2047    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2048    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2049    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2050    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2051    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2052    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2053    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2054    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2055    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2056    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2057    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2058    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2059    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2060    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2061    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2062    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2063    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2064    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2065    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2066    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h3F; end 
+            2067    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b0; i_axi_arlen <= 8'h3F; end 
+
+
+            3000    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b1; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h00; end 
+            3001    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b1; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h00; end 
+            3002    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h00; end 
+            3003    : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b1; i_axi_arlen <= 8'h00; end 
+
+
+
+            default : begin i_axi_araddr <= 32'h00000000; i_axi_arvalid <= 1'b0; i_axi_rready <= 1'b0; i_axi_arlen <= i_axi_arlen; end 
         endcase
     end 
 
