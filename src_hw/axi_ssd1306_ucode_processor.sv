@@ -2,54 +2,67 @@
 `timescale 1 ns / 1 ps
 
 module axi_ssd1306_ucode_processor #(
-    parameter integer S_AXI_ID_WIDTH     = 0 ,
-    parameter integer S_AXI_DATA_WIDTH   = 32,
-    parameter integer S_AXI_ADDR_WIDTH   = 8 
+    parameter integer S_AXI_ID_WIDTH   = 0 ,
+    parameter integer S_AXI_DATA_WIDTH = 32,
+    parameter integer S_AXI_ADDR_WIDTH = 8 ,
+    parameter integer SIZE_WIDTH       = 16,
+    parameter integer DATA_WIDTH       = 32
 ) (
-    input  logic                            S_AXI_ACLK    ,
-    input  logic                            S_AXI_ARESETN ,
-    input  logic [      S_AXI_ID_WIDTH-1:0] S_AXI_AWID    ,
-    input  logic [    S_AXI_ADDR_WIDTH-1:0] S_AXI_AWADDR  ,
-    input  logic [                     7:0] S_AXI_AWLEN   ,
-    input  logic [                     2:0] S_AXI_AWSIZE  ,
-    input  logic [                     1:0] S_AXI_AWBURST ,
-    input  logic                            S_AXI_AWLOCK  ,
-    input  logic [                     3:0] S_AXI_AWCACHE ,
-    input  logic [                     2:0] S_AXI_AWPROT  ,
-    input  logic [                     3:0] S_AXI_AWQOS   ,
-    input  logic [                     3:0] S_AXI_AWREGION,
-
-    input  logic                            S_AXI_AWVALID ,
-    output logic                            S_AXI_AWREADY ,
-    input  logic [    S_AXI_DATA_WIDTH-1:0] S_AXI_WDATA   ,
-    input  logic [(S_AXI_DATA_WIDTH/8)-1:0] S_AXI_WSTRB   ,
-    input  logic                            S_AXI_WLAST   ,
-    input  logic                            S_AXI_WVALID  ,
-    output logic                            S_AXI_WREADY  ,
-
-    output logic [      S_AXI_ID_WIDTH-1:0] S_AXI_BID     ,
-    output logic [                     1:0] S_AXI_BRESP   ,
-    output logic                            S_AXI_BVALID  ,
-    input  logic                            S_AXI_BREADY  ,
-    
-    input  logic [      S_AXI_ID_WIDTH-1:0] S_AXI_ARID    ,
-    input  logic [    S_AXI_ADDR_WIDTH-1:0] S_AXI_ARADDR  ,
-    input  logic [                     7:0] S_AXI_ARLEN   ,
-    input  logic [                     2:0] S_AXI_ARSIZE  ,
-    input  logic [                     1:0] S_AXI_ARBURST ,
-    input  logic                            S_AXI_ARLOCK  ,
-    input  logic [                     3:0] S_AXI_ARCACHE ,
-    input  logic [                     2:0] S_AXI_ARPROT  ,
-    input  logic [                     3:0] S_AXI_ARQOS   ,
-    input  logic [                     3:0] S_AXI_ARREGION,
-
-    input  logic                            S_AXI_ARVALID ,
-    output logic                            S_AXI_ARREADY ,
-    output logic [      S_AXI_ID_WIDTH-1:0] S_AXI_RID     ,
-    output logic [    S_AXI_DATA_WIDTH-1:0] S_AXI_RDATA   ,
-    output logic [                     1:0] S_AXI_RRESP   ,
-    output logic                            S_AXI_RLAST   ,
-    output logic                            S_AXI_RVALID  ,
+    input  logic                            i_clk               ,
+    input  logic                            i_resetn            ,
+    //
+    input  logic                            i_cfg_initialize    ,
+    input  logic [                     7:0] i_cfg_iic_address   ,
+    ///
+    output logic [                     7:0] o_write_cmd_iic_addr,
+    output logic [          SIZE_WIDTH-1:0] o_write_cmd_size    ,
+    output logic                            o_write_cmd_valid   ,
+    //
+    output logic [          DATA_WIDTH-1:0] o_s_axis_tdata      ,
+    output logic                            o_s_axis_tlast      ,
+    output logic                            o_s_axis_tvalid     ,
+    input  logic                            i_s_axis_tready     ,
+    // Configuration loading bus
+    input  logic                            S_AXI_ACLK          ,
+    input  logic                            S_AXI_ARESETN       ,
+    input  logic [      S_AXI_ID_WIDTH-1:0] S_AXI_AWID          ,
+    input  logic [    S_AXI_ADDR_WIDTH-1:0] S_AXI_AWADDR        ,
+    input  logic [                     7:0] S_AXI_AWLEN         ,
+    input  logic [                     2:0] S_AXI_AWSIZE        ,
+    input  logic [                     1:0] S_AXI_AWBURST       ,
+    input  logic                            S_AXI_AWLOCK        ,
+    input  logic [                     3:0] S_AXI_AWCACHE       ,
+    input  logic [                     2:0] S_AXI_AWPROT        ,
+    input  logic [                     3:0] S_AXI_AWQOS         ,
+    input  logic [                     3:0] S_AXI_AWREGION      ,
+    input  logic                            S_AXI_AWVALID       ,
+    output logic                            S_AXI_AWREADY       ,
+    input  logic [    S_AXI_DATA_WIDTH-1:0] S_AXI_WDATA         ,
+    input  logic [(S_AXI_DATA_WIDTH/8)-1:0] S_AXI_WSTRB         ,
+    input  logic                            S_AXI_WLAST         ,
+    input  logic                            S_AXI_WVALID        ,
+    output logic                            S_AXI_WREADY        ,
+    output logic [      S_AXI_ID_WIDTH-1:0] S_AXI_BID           ,
+    output logic [                     1:0] S_AXI_BRESP         ,
+    output logic                            S_AXI_BVALID        ,
+    input  logic                            S_AXI_BREADY        ,
+    input  logic [      S_AXI_ID_WIDTH-1:0] S_AXI_ARID          ,
+    input  logic [    S_AXI_ADDR_WIDTH-1:0] S_AXI_ARADDR        ,
+    input  logic [                     7:0] S_AXI_ARLEN         ,
+    input  logic [                     2:0] S_AXI_ARSIZE        ,
+    input  logic [                     1:0] S_AXI_ARBURST       ,
+    input  logic                            S_AXI_ARLOCK        ,
+    input  logic [                     3:0] S_AXI_ARCACHE       ,
+    input  logic [                     2:0] S_AXI_ARPROT        ,
+    input  logic [                     3:0] S_AXI_ARQOS         ,
+    input  logic [                     3:0] S_AXI_ARREGION      ,
+    input  logic                            S_AXI_ARVALID       ,
+    output logic                            S_AXI_ARREADY       ,
+    output logic [      S_AXI_ID_WIDTH-1:0] S_AXI_RID           ,
+    output logic [    S_AXI_DATA_WIDTH-1:0] S_AXI_RDATA         ,
+    output logic [                     1:0] S_AXI_RRESP         ,
+    output logic                            S_AXI_RLAST         ,
+    output logic                            S_AXI_RVALID        ,
     input  logic                            S_AXI_RREADY
 );
 
@@ -476,6 +489,35 @@ module axi_ssd1306_ucode_processor #(
         .web           (web           )
     );
 
+/////////////////////////////////////////////////////////////
+/////////////////// -= UCODE PROCESSOR =- ///////////////////
+/////////////////////////////////////////////////////////////
+
+
+    axis_ucode_processor #(
+        .SIZE_WIDTH(SIZE_WIDTH),
+        .DATA_WIDTH(DATA_WIDTH)
+    ) axis_ucode_processor_inst (
+        .i_clk               (i_clk               ),
+        .i_reset             (~i_resetn           ),
+        //
+        .i_cfg_initialize    (i_cfg_initialize    ),
+        .i_cfg_iic_address   (i_cfg_iic_address   ),
+        //
+        .o_addr              (addrb               ),
+        .o_en                (enb                 ),
+        .i_din               (doutb               ),
+        //
+        .o_write_cmd_iic_addr(o_write_cmd_iic_addr),
+        .o_write_cmd_size    (o_write_cmd_size    ),
+        .o_write_cmd_valid   (o_write_cmd_valid   ),
+        //
+        .o_s_axis_tdata      (o_s_axis_tdata      ),
+        .o_s_axis_tlast      (o_s_axis_tlast      ),
+        .o_s_axis_tvalid     (o_s_axis_tvalid     ),
+        .i_s_axis_tready     (i_s_axis_tready     )
+        //
+    );
 
 endmodule
 

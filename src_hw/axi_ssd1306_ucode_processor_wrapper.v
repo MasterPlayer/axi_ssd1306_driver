@@ -52,12 +52,7 @@ module axi_ssd1306_ucode_processor_wrapper #(
 axi_ssd1306_ucode_processor #(
     .S_AXI_ID_WIDTH    (S_AXI_ID_WIDTH    ),
     .S_AXI_DATA_WIDTH  (S_AXI_DATA_WIDTH  ),
-    .S_AXI_ADDR_WIDTH  (S_AXI_ADDR_WIDTH  ),
-    .S_AXI_AWUSER_WIDTH(S_AXI_AWUSER_WIDTH),
-    .S_AXI_ARUSER_WIDTH(S_AXI_ARUSER_WIDTH),
-    .S_AXI_WUSER_WIDTH (S_AXI_WUSER_WIDTH ),
-    .S_AXI_RUSER_WIDTH (S_AXI_RUSER_WIDTH ),
-    .S_AXI_BUSER_WIDTH (S_AXI_BUSER_WIDTH )
+    .S_AXI_ADDR_WIDTH  (S_AXI_ADDR_WIDTH  ) 
 ) axi_ssd1306_ucode_processor (
     .S_AXI_ACLK    (S_AXI_ACLK    ),
     .S_AXI_ARESETN (S_AXI_ARESETN ),
@@ -71,18 +66,15 @@ axi_ssd1306_ucode_processor #(
     .S_AXI_AWPROT  (S_AXI_AWPROT  ),
     .S_AXI_AWQOS   (S_AXI_AWQOS   ),
     .S_AXI_AWREGION(S_AXI_AWREGION),
-    .S_AXI_AWUSER  (S_AXI_AWUSER  ),
     .S_AXI_AWVALID (S_AXI_AWVALID ),
     .S_AXI_AWREADY (S_AXI_AWREADY ),
     .S_AXI_WDATA   (S_AXI_WDATA   ),
     .S_AXI_WSTRB   (S_AXI_WSTRB   ),
     .S_AXI_WLAST   (S_AXI_WLAST   ),
-    .S_AXI_WUSER   (S_AXI_WUSER   ),
     .S_AXI_WVALID  (S_AXI_WVALID  ),
     .S_AXI_WREADY  (S_AXI_WREADY  ),
     .S_AXI_BID     (S_AXI_BID     ),
     .S_AXI_BRESP   (S_AXI_BRESP   ),
-    .S_AXI_BUSER   (S_AXI_BUSER   ),
     .S_AXI_BVALID  (S_AXI_BVALID  ),
     .S_AXI_BREADY  (S_AXI_BREADY  ),
     .S_AXI_ARID    (S_AXI_ARID    ),
@@ -95,14 +87,12 @@ axi_ssd1306_ucode_processor #(
     .S_AXI_ARPROT  (S_AXI_ARPROT  ),
     .S_AXI_ARQOS   (S_AXI_ARQOS   ),
     .S_AXI_ARREGION(S_AXI_ARREGION),
-    .S_AXI_ARUSER  (S_AXI_ARUSER  ),
     .S_AXI_ARVALID (S_AXI_ARVALID ),
     .S_AXI_ARREADY (S_AXI_ARREADY ),
     .S_AXI_RID     (S_AXI_RID     ),
     .S_AXI_RDATA   (S_AXI_RDATA   ),
     .S_AXI_RRESP   (S_AXI_RRESP   ),
     .S_AXI_RLAST   (S_AXI_RLAST   ),
-    .S_AXI_RUSER   (S_AXI_RUSER   ),
     .S_AXI_RVALID  (S_AXI_RVALID  ),
     .S_AXI_RREADY  (S_AXI_RREADY  )
 );
