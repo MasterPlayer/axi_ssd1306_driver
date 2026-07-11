@@ -2,98 +2,88 @@
 `timescale 1 ns / 1 ps
 
 module axi_ssd1306_ucode_processor #(
-    parameter integer C_S_AXI_ID_WIDTH     = 0 ,
-    parameter integer C_S_AXI_DATA_WIDTH   = 32,
-    parameter integer C_S_AXI_ADDR_WIDTH   = 8 ,
-    parameter integer C_S_AXI_AWUSER_WIDTH = 0 ,
-    parameter integer C_S_AXI_ARUSER_WIDTH = 0 ,
-    parameter integer C_S_AXI_WUSER_WIDTH  = 0 ,
-    parameter integer C_S_AXI_RUSER_WIDTH  = 0 ,
-    parameter integer C_S_AXI_BUSER_WIDTH  = 0
+    parameter integer S_AXI_ID_WIDTH     = 0 ,
+    parameter integer S_AXI_DATA_WIDTH   = 32,
+    parameter integer S_AXI_ADDR_WIDTH   = 8 
 ) (
-    input  logic                              S_AXI_ACLK    ,
-    input  logic                              S_AXI_ARESETN ,
-    input  logic [      C_S_AXI_ID_WIDTH-1:0] S_AXI_AWID    ,
-    input  logic [    C_S_AXI_ADDR_WIDTH-1:0] S_AXI_AWADDR  ,
-    input  logic [                       7:0] S_AXI_AWLEN   ,
-    input  logic [                       2:0] S_AXI_AWSIZE  ,
-    input  logic [                       1:0] S_AXI_AWBURST ,
-    input  logic                              S_AXI_AWLOCK  ,
-    input  logic [                       3:0] S_AXI_AWCACHE ,
-    input  logic [                       2:0] S_AXI_AWPROT  ,
-    input  logic [                       3:0] S_AXI_AWQOS   ,
-    input  logic [                       3:0] S_AXI_AWREGION,
-    input  logic [  C_S_AXI_AWUSER_WIDTH-1:0] S_AXI_AWUSER  ,
-    input  logic                              S_AXI_AWVALID ,
-    output logic                              S_AXI_AWREADY ,
-    input  logic [    C_S_AXI_DATA_WIDTH-1:0] S_AXI_WDATA   ,
-    input  logic [(C_S_AXI_DATA_WIDTH/8)-1:0] S_AXI_WSTRB   ,
-    input  logic                              S_AXI_WLAST   ,
-    input  logic [   C_S_AXI_WUSER_WIDTH-1:0] S_AXI_WUSER   ,
-    input  logic                              S_AXI_WVALID  ,
-    output logic                              S_AXI_WREADY  ,
-    output logic [      C_S_AXI_ID_WIDTH-1:0] S_AXI_BID     ,
-    output logic [                       1:0] S_AXI_BRESP   ,
-    output logic [   C_S_AXI_BUSER_WIDTH-1:0] S_AXI_BUSER   ,
-    output logic                              S_AXI_BVALID  ,
-    input  logic                              S_AXI_BREADY  ,
-    input  logic [      C_S_AXI_ID_WIDTH-1:0] S_AXI_ARID    ,
-    input  logic [    C_S_AXI_ADDR_WIDTH-1:0] S_AXI_ARADDR  ,
-    input  logic [                       7:0] S_AXI_ARLEN   ,
-    input  logic [                       2:0] S_AXI_ARSIZE  ,
-    input  logic [                       1:0] S_AXI_ARBURST ,
-    input  logic                              S_AXI_ARLOCK  ,
-    input  logic [                       3:0] S_AXI_ARCACHE ,
-    input  logic [                       2:0] S_AXI_ARPROT  ,
-    input  logic [                       3:0] S_AXI_ARQOS   ,
-    input  logic [                       3:0] S_AXI_ARREGION,
-    input  logic [  C_S_AXI_ARUSER_WIDTH-1:0] S_AXI_ARUSER  ,
-    input  logic                              S_AXI_ARVALID ,
-    output logic                              S_AXI_ARREADY ,
-    output logic [      C_S_AXI_ID_WIDTH-1:0] S_AXI_RID     ,
-    output logic [    C_S_AXI_DATA_WIDTH-1:0] S_AXI_RDATA   ,
-    output logic [                       1:0] S_AXI_RRESP   ,
-    output logic                              S_AXI_RLAST   ,
-    output logic [   C_S_AXI_RUSER_WIDTH-1:0] S_AXI_RUSER   ,
-    output logic                              S_AXI_RVALID  ,
-    input  logic                              S_AXI_RREADY
+    input  logic                            S_AXI_ACLK    ,
+    input  logic                            S_AXI_ARESETN ,
+    input  logic [      S_AXI_ID_WIDTH-1:0] S_AXI_AWID    ,
+    input  logic [    S_AXI_ADDR_WIDTH-1:0] S_AXI_AWADDR  ,
+    input  logic [                     7:0] S_AXI_AWLEN   ,
+    input  logic [                     2:0] S_AXI_AWSIZE  ,
+    input  logic [                     1:0] S_AXI_AWBURST ,
+    input  logic                            S_AXI_AWLOCK  ,
+    input  logic [                     3:0] S_AXI_AWCACHE ,
+    input  logic [                     2:0] S_AXI_AWPROT  ,
+    input  logic [                     3:0] S_AXI_AWQOS   ,
+    input  logic [                     3:0] S_AXI_AWREGION,
+
+    input  logic                            S_AXI_AWVALID ,
+    output logic                            S_AXI_AWREADY ,
+    input  logic [    S_AXI_DATA_WIDTH-1:0] S_AXI_WDATA   ,
+    input  logic [(S_AXI_DATA_WIDTH/8)-1:0] S_AXI_WSTRB   ,
+    input  logic                            S_AXI_WLAST   ,
+    input  logic                            S_AXI_WVALID  ,
+    output logic                            S_AXI_WREADY  ,
+
+    output logic [      S_AXI_ID_WIDTH-1:0] S_AXI_BID     ,
+    output logic [                     1:0] S_AXI_BRESP   ,
+    output logic                            S_AXI_BVALID  ,
+    input  logic                            S_AXI_BREADY  ,
+    
+    input  logic [      S_AXI_ID_WIDTH-1:0] S_AXI_ARID    ,
+    input  logic [    S_AXI_ADDR_WIDTH-1:0] S_AXI_ARADDR  ,
+    input  logic [                     7:0] S_AXI_ARLEN   ,
+    input  logic [                     2:0] S_AXI_ARSIZE  ,
+    input  logic [                     1:0] S_AXI_ARBURST ,
+    input  logic                            S_AXI_ARLOCK  ,
+    input  logic [                     3:0] S_AXI_ARCACHE ,
+    input  logic [                     2:0] S_AXI_ARPROT  ,
+    input  logic [                     3:0] S_AXI_ARQOS   ,
+    input  logic [                     3:0] S_AXI_ARREGION,
+
+    input  logic                            S_AXI_ARVALID ,
+    output logic                            S_AXI_ARREADY ,
+    output logic [      S_AXI_ID_WIDTH-1:0] S_AXI_RID     ,
+    output logic [    S_AXI_DATA_WIDTH-1:0] S_AXI_RDATA   ,
+    output logic [                     1:0] S_AXI_RRESP   ,
+    output logic                            S_AXI_RLAST   ,
+    output logic                            S_AXI_RVALID  ,
+    input  logic                            S_AXI_RREADY
 );
+
+
+
+    localparam integer ADDR_LSB          = (S_AXI_DATA_WIDTH/32) + 1;
+    localparam integer OPT_MEM_ADDR_BITS = 5                        ;
 
     typedef enum{
         RST_ST  , 
+
         CHK_AW_ST,
         WRITE_AXI_ST, 
         RESP_AXI_ST,
 
         CHK_AR_ST,
-        READ_AXI_ST,
+        READ_AXI_ST
 
-        STUB_ST 
     } fsm;
 
     fsm current_state = RST_ST;
 
-    logic s_axi_awready_reg = 1'b0;
-    logic s_axi_arready_reg = 1'b0;
+    logic [S_AXI_ADDR_WIDTH-1:0] axi_addr         ;
+    logic [                 1:0] axi_axburst      ;
+    logic [                 7:0] axi_axlen_counter;
+    logic [                 7:0] axi_axlen        ;
 
-    logic [C_S_AXI_ADDR_WIDTH-1:0] axi_addr;
+    logic [31:0] aw_wrap_size;
+    logic [31:0] ar_wrap_size;
+    logic        aw_wrap_en  ;
+    logic        ar_wrap_en  ;
 
-    logic [7:0] axi_axlen_counter;
-
-    logic s_axi_wready_reg = 1'b0;
-
-    logic s_axi_bvalid_reg = 1'b0;
-
-    logic s_axi_rvalid_reg = 1'b0;
-
-    logic s_axi_rlast_reg = 1'b0;
-
-    logic [C_S_AXI_ID_WIDTH-1:0] s_axi_rid_reg;
-
-    logic [C_S_AXI_ID_WIDTH-1:0] s_axi_bid_reg;
-
-    logic [ 5:0] addra;
-    logic [ 5:0] addrb = '{default:0};
+    logic [OPT_MEM_ADDR_BITS:0] addra               ;
+    logic [OPT_MEM_ADDR_BITS:0] addrb = '{default:0};
 
     logic [31:0] douta;
     logic [31:0] doutb;
@@ -107,6 +97,14 @@ module axi_ssd1306_ucode_processor #(
     logic ena;
     logic enb;
 
+    always_comb aw_wrap_size  = (S_AXI_DATA_WIDTH/8 * (axi_axlen));
+    always_comb ar_wrap_size  = (S_AXI_DATA_WIDTH/8 * (axi_axlen));
+
+    always_comb aw_wrap_en    = ((axi_addr & aw_wrap_size) == aw_wrap_size)? 1'b1: 1'b0;
+    always_comb ar_wrap_en    = ((axi_addr & ar_wrap_size) == ar_wrap_size)? 1'b1: 1'b0;
+
+
+    always_comb S_AXI_RDATA = douta;
 
 
     always_ff @(posedge S_AXI_ACLK) begin 
@@ -126,14 +124,14 @@ module axi_ssd1306_ucode_processor #(
                     end 
 
                 WRITE_AXI_ST : 
-                    if (S_AXI_WVALID & s_axi_wready_reg & S_AXI_WLAST) begin 
+                    if (S_AXI_WVALID & S_AXI_WREADY & S_AXI_WLAST) begin 
                         current_state <= RESP_AXI_ST;
                     end else begin 
                         current_state <= current_state;
                     end 
 
                 RESP_AXI_ST : 
-                    if (S_AXI_BREADY & s_axi_bvalid_reg) begin 
+                    if (S_AXI_BREADY & S_AXI_BVALID) begin 
                         current_state <= CHK_AR_ST;
                     end else begin 
                         current_state <= current_state;
@@ -147,7 +145,7 @@ module axi_ssd1306_ucode_processor #(
                     end 
 
                 READ_AXI_ST : 
-                    if (s_axi_rvalid_reg & S_AXI_RREADY & s_axi_rlast_reg) begin 
+                    if (S_AXI_RVALID & S_AXI_RREADY & S_AXI_RLAST) begin 
                         current_state <= CHK_AW_ST;
                     end else begin 
                         current_state <= current_state;
@@ -161,16 +159,6 @@ module axi_ssd1306_ucode_processor #(
     end 
 
 
-    always_comb S_AXI_AWREADY = s_axi_awready_reg;
-    always_comb S_AXI_ARREADY = s_axi_arready_reg;
-    always_comb S_AXI_WREADY = s_axi_wready_reg;
-    always_comb S_AXI_BVALID = s_axi_bvalid_reg;
-    always_comb S_AXI_RVALID = s_axi_rvalid_reg;
-    always_comb S_AXI_RDATA = douta;
-    always_comb S_AXI_RLAST = s_axi_rlast_reg;
-    always_comb S_AXI_RID = s_axi_rid_reg;
-    always_comb S_AXI_BID = s_axi_bid_reg;
-
     always_ff @(posedge S_AXI_ACLK) begin : axi_addr_processing 
         case (current_state)
             CHK_AW_ST : 
@@ -180,22 +168,84 @@ module axi_ssd1306_ucode_processor #(
                 axi_addr <= S_AXI_ARADDR;
 
             WRITE_AXI_ST : 
-                if (S_AXI_WVALID & s_axi_wready_reg) begin 
-                    axi_addr <= axi_addr + 4;
+                if (S_AXI_WVALID & S_AXI_WREADY) begin 
+                    case (axi_axburst) 
+                        2'b00 : begin axi_addr <= axi_addr; end 
+                        2'b01 : begin 
+                            axi_addr[S_AXI_ADDR_WIDTH-1:ADDR_LSB] <= axi_addr[S_AXI_ADDR_WIDTH - 1:ADDR_LSB] + 1;
+                            axi_addr[ADDR_LSB-1:0]                  <= {ADDR_LSB{1'b0}};
+                        end 
+                        2'b10 :             
+                            if (aw_wrap_en) begin
+                                axi_addr <= (axi_addr - aw_wrap_size);
+                            end else begin
+                                axi_addr[S_AXI_ADDR_WIDTH-1:ADDR_LSB] <= axi_addr[S_AXI_ADDR_WIDTH - 1:ADDR_LSB] + 1;
+                                axi_addr[ADDR_LSB-1:0]                  <= {ADDR_LSB{1'b0}};
+                            end
+
+                        default : axi_addr <= axi_addr [S_AXI_ADDR_WIDTH - 1:ADDR_LSB] + 1; 
+                    endcase // axi_axburst
+                    // axi_addr <= axi_addr + 4;
                 end else begin 
                     axi_addr <= axi_addr;
                 end 
 
             READ_AXI_ST : 
                 if (S_AXI_RREADY) begin 
-                    axi_addr <= axi_addr + 4;
+                    case (axi_axburst) 
+                        2'b00 : axi_addr <= axi_addr;
+                        2'b01 : begin 
+                            axi_addr[S_AXI_ADDR_WIDTH-1:ADDR_LSB] <= axi_addr[S_AXI_ADDR_WIDTH - 1:ADDR_LSB] + 1;
+                            axi_addr[ADDR_LSB-1:0]                  <= {ADDR_LSB{1'b0}};
+                        end 
+                        2'b10 :             
+                            if (aw_wrap_en) begin
+                                axi_addr <= (axi_addr - aw_wrap_size);
+                            end else begin
+                                axi_addr[S_AXI_ADDR_WIDTH-1:ADDR_LSB] <= axi_addr[S_AXI_ADDR_WIDTH - 1:ADDR_LSB] + 1;
+                                axi_addr[ADDR_LSB-1:0]                  <= {ADDR_LSB{1'b0}};
+                            end
+
+                        default : axi_addr <= axi_addr [S_AXI_ADDR_WIDTH - 1:ADDR_LSB] + 1; 
+                    endcase // axi_axburst
+                    // axi_addr <= axi_addr + 4;
                 end else begin 
                     axi_addr <= axi_addr;
                 end 
 
             default : 
-                axi_addr <= 'bz;
+                axi_addr <= axi_addr;
         endcase // current_state
+    end 
+
+
+    always_ff @(posedge S_AXI_ACLK) begin : axi_axlen_processing 
+        case (current_state)
+            CHK_AW_ST : 
+                axi_axlen <= S_AXI_AWLEN;
+
+            CHK_AR_ST : 
+                axi_axlen <= S_AXI_ARLEN;
+
+            default : 
+                axi_axlen <= axi_axlen;
+
+        endcase // current_state
+    end 
+
+
+    always_ff @(posedge S_AXI_ACLK) begin : axi_axburst_processing 
+        case (current_state)
+            CHK_AW_ST : 
+                axi_axburst <= S_AXI_AWBURST;
+            
+            CHK_AR_ST : 
+                axi_axburst <= S_AXI_ARBURST;
+            
+            default : 
+                axi_axburst <= axi_axburst;
+
+        endcase
     end 
 
 
@@ -205,7 +255,7 @@ module axi_ssd1306_ucode_processor #(
                 axi_axlen_counter <= S_AXI_AWLEN;
 
             WRITE_AXI_ST : 
-                if (S_AXI_WVALID & s_axi_wready_reg) begin 
+                if (S_AXI_WVALID & S_AXI_WREADY) begin 
                     axi_axlen_counter <= axi_axlen_counter - 1;
                 end else begin 
                     axi_axlen_counter <= axi_axlen_counter;
@@ -215,7 +265,7 @@ module axi_ssd1306_ucode_processor #(
                 axi_axlen_counter <= S_AXI_ARLEN;
 
             READ_AXI_ST : 
-                if (S_AXI_RREADY & s_axi_rvalid_reg) begin 
+                if (S_AXI_RREADY & S_AXI_RVALID) begin 
                     axi_axlen_counter <= axi_axlen_counter - 1;
                 end else begin 
                     axi_axlen_counter <= axi_axlen_counter;
@@ -233,109 +283,113 @@ module axi_ssd1306_ucode_processor #(
 /////////////////////////////////////////////////////////////
 
  
-    always_ff @(posedge S_AXI_ACLK) begin : s_axi_awready_reg_processing 
+    always_ff @(posedge S_AXI_ACLK) begin : S_AXI_AWREADY_processing 
         case (current_state)
             CHK_AW_ST : 
                 if (S_AXI_AWVALID) begin 
-                    s_axi_awready_reg <= 1'b1;
+                    S_AXI_AWREADY <= 1'b1;
                 end else begin 
-                    s_axi_awready_reg <= 1'b0;
+                    S_AXI_AWREADY <= 1'b0;
                 end 
 
             default : 
-                s_axi_awready_reg <= 1'b0;
+                S_AXI_AWREADY <= 1'b0;
 
         endcase // current_state
     end 
 
 
-    always_ff @(posedge S_AXI_ACLK) begin : s_axi_wready_reg_processing 
+    always_ff @(posedge S_AXI_ACLK) begin : S_AXI_WREADY_processing 
         case (current_state)
             WRITE_AXI_ST : 
-                if (S_AXI_WVALID & s_axi_wready_reg & S_AXI_WLAST) begin 
-                    s_axi_wready_reg <= 1'b0;
+                if (S_AXI_WVALID & S_AXI_WREADY & S_AXI_WLAST) begin 
+                    S_AXI_WREADY <= 1'b0;
                 end else begin 
-                    s_axi_wready_reg <= 1'b1;
+                    S_AXI_WREADY <= 1'b1;
                 end 
 
             default : 
-                s_axi_wready_reg <= 1'b0;
+                S_AXI_WREADY <= 1'b0;
 
         endcase // current_state
     end 
 
 
-    always_ff @(posedge S_AXI_ACLK) begin : s_axi_bvalid_reg_processing 
+    always_ff @(posedge S_AXI_ACLK) begin : S_AXI_BVALID_processing 
         case (current_state)
             RESP_AXI_ST : 
-                if (S_AXI_BREADY & s_axi_bvalid_reg) begin 
-                    s_axi_bvalid_reg <= 1'b0;
+                if (S_AXI_BREADY & S_AXI_BVALID) begin 
+                    S_AXI_BVALID <= 1'b0;
                 end else begin 
-                    s_axi_bvalid_reg <= 1'b1;
+                    S_AXI_BVALID <= 1'b1;
                 end 
 
             default : 
-                s_axi_bvalid_reg <= 1'b0;
+                S_AXI_BVALID <= 1'b0;
         endcase // current_state
     end 
 
-    always_ff @(posedge S_AXI_ACLK) begin : s_axi_bid_reg_processing 
+
+    always_ff @(posedge S_AXI_ACLK) begin : S_AXI_BID_processing 
         case (current_state) 
 
             CHK_AW_ST : 
-                s_axi_bid_reg <= S_AXI_AWID;
+                S_AXI_BID <= S_AXI_AWID;
 
             default : 
-                s_axi_bid_reg <= s_axi_bid_reg;
+                S_AXI_BID <= S_AXI_BID;
+
         endcase // current_state
     end 
+
 
 /////////////////////////////////////////////////////////////
 ///////////////////// -= READ DOMAIN =- /////////////////////
 /////////////////////////////////////////////////////////////
 
-    always_ff @(posedge S_AXI_ACLK) begin : s_axi_arready_reg_processing 
+
+    always_ff @(posedge S_AXI_ACLK) begin : S_AXI_ARREADY_processing 
         case (current_state)
             CHK_AR_ST : 
                 if (S_AXI_ARVALID) begin 
-                    s_axi_arready_reg <= 1'b1;
+                    S_AXI_ARREADY <= 1'b1;
                 end else begin 
-                    s_axi_arready_reg <= 1'b0;
+                    S_AXI_ARREADY <= 1'b0;
                 end 
 
             default : 
-                s_axi_arready_reg <= 1'b0;
+                S_AXI_ARREADY <= 1'b0;
 
         endcase // current_state
     end 
 
 
-    always_ff @(posedge S_AXI_ACLK) begin : s_axi_rvalid_reg_processing 
+    always_ff @(posedge S_AXI_ACLK) begin : S_AXI_RVALID_processing 
         case (current_state)
             READ_AXI_ST :
-                if (S_AXI_RREADY & s_axi_rlast_reg & s_axi_rvalid_reg) begin 
-                    s_axi_rvalid_reg <= 1'b0;
+                if (S_AXI_RREADY & S_AXI_RLAST & S_AXI_RVALID) begin 
+                    S_AXI_RVALID <= 1'b0;
                 end else begin 
-                    s_axi_rvalid_reg <= 1'b1;
+                    S_AXI_RVALID <= 1'b1;
                 end 
 
             default : 
-                s_axi_rvalid_reg <= 1'b0;
+                S_AXI_RVALID <= 1'b0;
 
         endcase // current_state
     end 
 
 
-    always_comb s_axi_rlast_reg = (axi_axlen_counter == 0);
+    always_comb S_AXI_RLAST = (axi_axlen_counter == 0);
 
 
-    always_ff @(posedge S_AXI_ACLK) begin : s_axi_rid_reg_processing 
+    always_ff @(posedge S_AXI_ACLK) begin : s_axi_rid_processing 
         case (current_state)
             CHK_AR_ST : 
-                s_axi_rid_reg <= S_AXI_ARID;
+                S_AXI_RID <= S_AXI_ARID;
 
             default : 
-                s_axi_rid_reg <= s_axi_rid_reg;
+                S_AXI_RID <= S_AXI_RID;
 
         endcase // current_state
     end 
