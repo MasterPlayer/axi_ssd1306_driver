@@ -95,8 +95,8 @@ module axi_ssd1306_ucode_processor #(
     logic        aw_wrap_en  ;
     logic        ar_wrap_en  ;
 
-    logic [OPT_MEM_ADDR_BITS:0] addra               ;
-    logic [OPT_MEM_ADDR_BITS:0] addrb = '{default:0};
+    logic [OPT_MEM_ADDR_BITS:0] addra;
+    logic [OPT_MEM_ADDR_BITS:0] addrb;
 
     logic [31:0] douta;
     logic [31:0] doutb;

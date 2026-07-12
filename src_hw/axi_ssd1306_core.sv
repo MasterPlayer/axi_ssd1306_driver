@@ -103,9 +103,9 @@ module axi_ssd1306_core #(
 
     fsm current_state = IDLE_ST;
 
-    logic [           7:0] write_cmd_iic_addr = '{default:0};
-    logic [SIZE_WIDTH-1:0] write_cmd_size     = '{default:0};
-    logic                  write_cmd_valid    = 1'b0;
+    logic [           7:0] write_cmd_iic_addr;
+    logic [SIZE_WIDTH-1:0] write_cmd_size    ;
+    logic                  write_cmd_valid   ;
 
 
     logic [(AXIS_DATA_WIDTH-1):0] s_axis_tdata_bridge ;
@@ -113,9 +113,9 @@ module axi_ssd1306_core #(
     logic                         s_axis_tvalid_bridge;
     logic                         s_axis_tready_bridge;
 
-    logic [           7:0] write_cmd_iic_addr_bridge = '{default:0};
-    logic [SIZE_WIDTH-1:0] write_cmd_size_bridge     = '{default:0};
-    logic                  write_cmd_valid_bridge    = 1'b0        ;
+    logic [           7:0] write_cmd_iic_addr_bridge;
+    logic [SIZE_WIDTH-1:0] write_cmd_size_bridge    ;
+    logic                  write_cmd_valid_bridge   ;
 
 
     logic [(AXIS_DATA_WIDTH-1):0] s_axis_tdata_ucode ;
@@ -123,17 +123,17 @@ module axi_ssd1306_core #(
     logic                         s_axis_tvalid_ucode;
     logic                         s_axis_tready_ucode;
 
-    logic [           7:0] write_cmd_iic_addr_ucode = '{default:0};
-    logic [SIZE_WIDTH-1:0] write_cmd_size_ucode     = '{default:0};
-    logic                  write_cmd_valid_ucode    = 1'b0        ;
+    logic [           7:0] write_cmd_iic_addr_ucode;
+    logic [SIZE_WIDTH-1:0] write_cmd_size_ucode    ;
+    logic                  write_cmd_valid_ucode   ;
 
     logic [(AXI_DATA_WIDTH-1):0] axi_fifo_dout_data;
     logic                        axi_fifo_dout_last;
     logic                        axi_fifo_rden     ;
     logic                        axi_fifo_empty    ;
 
-    logic [7:0] word_counter = '{default:0};
-    logic [1:0] byte_counter = '{default:0};
+    logic [7:0] word_counter;
+    logic [1:0] byte_counter;
 
     logic [7:0] segment_address = 8'hb0;
 
@@ -217,28 +217,33 @@ module axi_ssd1306_core #(
 
 
     always_ff @(posedge i_clk) begin : word_counter_processing 
-        case (current_state)
-            TX_CMD_SET_SEGMENT_ADDRESS_ST : 
-                if (s_axis_tready) begin 
-                    if (word_counter == 1) begin 
-                        word_counter <= '{default:0};
+        if (~i_resetn) begin 
+            word_counter <= '{default:0};
+        end else begin 
+
+            case (current_state)
+                TX_CMD_SET_SEGMENT_ADDRESS_ST : 
+                    if (s_axis_tready) begin 
+                        if (word_counter == 1) begin 
+                            word_counter <= '{default:0};
+                        end else begin 
+                            word_counter <= word_counter + 1;
+                        end 
                     end else begin 
-                        word_counter <= word_counter + 1;
+                        word_counter <= word_counter;
                     end 
-                end else begin 
-                    word_counter <= word_counter;
-                end 
 
-            TX_DATA_ST : 
-                if (s_axis_tready) begin 
-                    word_counter <= word_counter + 1;
-                end else begin 
-                    word_counter <= word_counter;
-                end 
+                TX_DATA_ST : 
+                    if (s_axis_tready) begin 
+                        word_counter <= word_counter + 1;
+                    end else begin 
+                        word_counter <= word_counter;
+                    end 
 
-            default : 
-                word_counter <= '{default:0};
-        endcase // current_state
+                default : 
+                    word_counter <= '{default:0};
+            endcase // current_state
+        end 
     end 
 
 
@@ -349,7 +354,7 @@ module axi_ssd1306_core #(
 
             TX_CMD_SET_DATA_ST : 
                 if (s_axis_tready) begin 
-                    s_axis_tdata <= 8'hC0;
+                    s_axis_tdata <= 8'h40;
                 end else begin  
                     s_axis_tdata <= s_axis_tdata;
                 end 
@@ -418,7 +423,11 @@ module axi_ssd1306_core #(
     always_ff @(posedge i_clk) begin : s_axis_tvalid_processing 
         case (current_state)
             TX_CMD_SET_SEGMENT_ADDRESS_ST : 
-                s_axis_tvalid <= 1'b1;
+                if (s_axis_tready) begin 
+                    s_axis_tvalid <= 1'b1;
+                end else begin 
+                    s_axis_tvalid <= s_axis_tvalid;
+                end 
 
             TX_CMD_SET_DATA_ST: 
                 s_axis_tvalid <= 1'b1;
@@ -671,6 +680,18 @@ module axi_ssd1306_core #(
         //
     );
 
+
+
+    ila_axis ila_axis_inst (
+        .clk   (i_clk             ),   // input wire clk
+        .probe0(write_cmd_iic_addr),   // input wire [7:0]  probe0
+        .probe1(write_cmd_size    ),   // input wire [7:0]  probe1
+        .probe2(write_cmd_valid   ),   // input wire [0:0]  probe2
+        .probe3(s_axis_tdata      ),   // input wire [31:0]  probe3
+        .probe4(s_axis_tlast      ),   // input wire [0:0]  probe4
+        .probe5(s_axis_tvalid     ),   // input wire [0:0]  probe5
+        .probe6(s_axis_tready     )    // input wire [0:0]  probe6
+    );
 
 
 endmodule

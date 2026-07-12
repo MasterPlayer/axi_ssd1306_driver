@@ -3,7 +3,7 @@ module axis_ssd1306_mux #(
     parameter SIZE_WIDTH = 8,
     parameter DATA_WIDTH = 8
 ) (
-    input                         selector              ,
+    input  logic                  selector              ,
     // data channel 0 : from ucode
     input  logic [           7:0] i_write_cmd_iic_addr_0,
     input  logic [SIZE_WIDTH-1:0] i_write_cmd_size_0    ,
@@ -42,7 +42,6 @@ module axis_ssd1306_mux #(
     always_comb o_m_axis_tvalid      = (selector) ? i_s_axis_tvalid_1 : i_s_axis_tvalid_0;
 
     always_comb o_s_axis_tready_0 = (selector) ? 1'b0 : i_m_axis_tready; 
-
     always_comb o_s_axis_tready_1 = (selector) ? i_m_axis_tready : 1'b0;
 
 endmodule : axis_ssd1306_mux
