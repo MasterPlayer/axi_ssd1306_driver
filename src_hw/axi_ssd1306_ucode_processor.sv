@@ -356,6 +356,9 @@ module axi_ssd1306_ucode_processor #(
     end 
 
 
+    always_comb S_AXI_BRESP = '{default:0};
+
+
 /////////////////////////////////////////////////////////////
 ///////////////////// -= READ DOMAIN =- /////////////////////
 /////////////////////////////////////////////////////////////
@@ -406,6 +409,9 @@ module axi_ssd1306_ucode_processor #(
 
         endcase // current_state
     end 
+
+
+    always_comb S_AXI_RRESP = '{default:0};
 
 
 /////////////////////////////////////////////////////////////
@@ -499,7 +505,7 @@ module axi_ssd1306_ucode_processor #(
         .DATA_WIDTH(DATA_WIDTH)
     ) axis_ucode_processor_inst (
         .i_clk               (i_clk               ),
-        .i_reset             (~i_resetn           ),
+        .i_resetn            (i_resetn            ),
         //
         .i_cfg_initialize    (i_cfg_initialize    ),
         .i_cfg_iic_address   (i_cfg_iic_address   ),

@@ -5,7 +5,7 @@ module axis_ucode_processor #(
     parameter integer DATA_WIDTH = 32
 ) (
     input  logic                  i_clk               ,
-    input  logic                  i_reset             ,
+    input  logic                  i_resetn             ,
     //
     input  logic                  i_cfg_initialize    ,
     input  logic [           7:0] i_cfg_iic_address   ,
@@ -25,9 +25,9 @@ module axis_ucode_processor #(
     //
 );
 
-    logic [ 1:0] size       = '{default:0};
-    logic        is_active  = 1'b0        ;
-    logic [31:0] shift_register_data = '{default:0};
+    logic [ 1:0] size               ;
+    logic        is_active          ;
+    logic [31:0] shift_register_data;
 
     typedef enum {
         RST_ST,
@@ -44,8 +44,8 @@ module axis_ucode_processor #(
 
     fsm current_state = RST_ST;
 
-    always_ff @(posedge i_clk) begin : current_state_processing 
-        if (i_reset) begin 
+    always_ff @(posedge i_clk, negedge i_resetn) begin : current_state_processing 
+        if (~i_resetn) begin 
             current_state <= RST_ST;
         end else begin 
 
@@ -104,171 +104,215 @@ module axis_ucode_processor #(
     end 
 
 
-    always_ff @(posedge i_clk) begin : o_addr_processing 
-        case (current_state)
-            IDLE_ST : 
-                o_addr <= '{default:0};
+    always_ff @(posedge i_clk, negedge i_resetn) begin : o_addr_processing 
+        if (~i_resetn) begin 
+            o_addr <= '{default:0};
+        end else begin 
+            case (current_state)
+                IDLE_ST : 
+                    o_addr <= '{default:0};
 
-            INC_PTR_ST : 
-                if (i_s_axis_tready) begin 
-                    o_addr <= o_addr + 1;
-                end else begin 
+                INC_PTR_ST : 
+                    if (i_s_axis_tready) begin 
+                        o_addr <= o_addr + 1;
+                    end else begin 
+                        o_addr <= o_addr;
+                    end 
+
+                default : 
                     o_addr <= o_addr;
-                end 
 
-            default : 
-                o_addr <= o_addr;
-
-        endcase // current_state
+            endcase // current_state
+        end 
     end 
 
 
-    always_ff @(posedge i_clk) begin : o_en_processing 
-        case (current_state)
-            RST_ST : 
-                o_en <= 1'b0;
-            
-            IDLE_ST : 
-                if (i_cfg_initialize) begin 
-                    o_en <= 1'b1;
-                end else begin 
+    always_ff @(posedge i_clk, negedge i_resetn) begin : o_en_processing 
+        if (~i_resetn) begin 
+            o_en <= 1'b0;
+        end else begin 
+            case (current_state)
+                RST_ST : 
                     o_en <= 1'b0;
-                end 
+                
+                IDLE_ST : 
+                    if (i_cfg_initialize) begin 
+                        o_en <= 1'b1;
+                    end else begin 
+                        o_en <= 1'b0;
+                    end 
 
-            default : 
-                o_en <= o_en;
+                default : 
+                    o_en <= o_en;
 
-        endcase // current_state
+            endcase // current_state
+        end 
     end 
 
 
-    always_ff @(posedge i_clk) begin : size_processing
-        case (current_state)
-            DECODE_ST : 
-                size <= i_din[25:24];
+    always_ff @(posedge i_clk, negedge i_resetn) begin : size_processing
+        if (~i_resetn) begin 
+            size <= '{default:0};
+        end else begin 
+            case (current_state)
+                DECODE_ST : 
+                    size <= i_din[25:24];
 
-            PERFORM_OPERATION_ST : 
-                if (i_s_axis_tready) begin 
-                    size <= size - 1;
-                end else begin 
-                    size <= size;
-                end 
+                PERFORM_OPERATION_ST : 
+                    if (i_s_axis_tready) begin 
+                        size <= size - 1;
+                    end else begin 
+                        size <= size;
+                    end 
 
-            default : 
-                size <= size; 
+                default : 
+                    size <= size; 
 
-        endcase // current_state_processing
+            endcase // current_state_processing
+        end 
     end 
 
 
-    always_ff @(posedge i_clk) begin : is_active_processing 
-        case (current_state)
-            DECODE_ST : 
-                is_active <= i_din[31];
+    always_ff @(posedge i_clk, negedge i_resetn) begin : is_active_processing 
+        if (~i_resetn) begin 
+            is_active <= 1'b0;
+        end else begin 
+            case (current_state)
+                DECODE_ST : 
+                    is_active <= i_din[31];
 
-            default : 
-                is_active <= is_active;
+                default : 
+                    is_active <= is_active;
 
-        endcase // current_state
+            endcase // current_state
+        end 
     end 
 
 
-    always_ff @(posedge i_clk) begin : shift_register_data_processing 
-        case (current_state)
-            DECODE_ST : 
-                shift_register_data <= i_din[31:0];
+    always_ff @(posedge i_clk, negedge i_resetn) begin : shift_register_data_processing 
+        if (~i_resetn) begin 
+            shift_register_data <= '{default:0};
+        end else begin 
 
-            PERFORM_OPERATION_ST : 
-                if (i_s_axis_tready) begin
-                    shift_register_data[23:0] <= shift_register_data[31:8]; 
-                end else begin 
-                    shift_register_data[23:0] <= shift_register_data[23:0];
-                end 
+            case (current_state)
+                DECODE_ST : 
+                    shift_register_data <= i_din[31:0];
 
-            default : 
-                shift_register_data <= shift_register_data;
-        endcase // current_state
+                PERFORM_OPERATION_ST : 
+                    if (i_s_axis_tready) begin
+                        shift_register_data[23:0] <= shift_register_data[31:8]; 
+                    end else begin 
+                        shift_register_data[23:0] <= shift_register_data[23:0];
+                    end 
+
+                default : 
+                    shift_register_data <= shift_register_data;
+
+            endcase // current_state
+        end 
     end 
 
 
-    always_ff @(posedge i_clk) begin : o_s_axis_tdata_processing 
-        case (current_state) 
+    always_ff @(posedge i_clk, negedge i_resetn) begin : o_s_axis_tdata_processing 
+        if (~i_resetn) begin 
+            o_s_axis_tdata <= '{default:0};
+        end else begin 
+            case (current_state) 
 
-            PERFORM_OPERATION_ST : 
-                if (i_s_axis_tready) begin 
-                    o_s_axis_tdata <= shift_register_data[7:0];
-                end else begin 
+                PERFORM_OPERATION_ST : 
+                    if (i_s_axis_tready) begin 
+                        o_s_axis_tdata <= shift_register_data[7:0];
+                    end else begin 
+                        o_s_axis_tdata <= o_s_axis_tdata;
+                    end 
+
+                default : 
                     o_s_axis_tdata <= o_s_axis_tdata;
-                end 
-
-            default : 
-                o_s_axis_tdata <= o_s_axis_tdata;
-        endcase // current_state
+            endcase // current_state
+        end 
     end 
 
 
     always_comb o_s_axis_tlast = (size == 0);
 
 
-    always_ff @(posedge i_clk) begin : o_s_axis_tvalid_processing 
-        case (current_state) 
-            PERFORM_OPERATION_ST : 
-                if (i_s_axis_tready) begin 
-                    if (size) begin 
-                        o_s_axis_tvalid <= 1'b1;
+    always_ff @(posedge i_clk, negedge i_resetn) begin : o_s_axis_tvalid_processing 
+        if (~i_resetn) begin 
+            o_s_axis_tvalid <= 1'b0;
+        end else begin 
+            case (current_state) 
+                PERFORM_OPERATION_ST : 
+                    if (i_s_axis_tready) begin 
+                        if (size) begin 
+                            o_s_axis_tvalid <= 1'b1;
+                        end else begin 
+                            o_s_axis_tvalid <= 1'b0;
+                        end 
                     end else begin 
-                        o_s_axis_tvalid <= 1'b0;
+                        o_s_axis_tvalid <= o_s_axis_tvalid;
                     end 
-                end else begin 
+
+                default : 
                     o_s_axis_tvalid <= o_s_axis_tvalid;
-                end 
-
-            default : 
-                o_s_axis_tvalid <= o_s_axis_tvalid;
-        endcase // current_state
+            endcase // current_state
+        end 
     end 
 
 
-    always_ff @(posedge i_clk) begin : o_write_cmd_iic_addr_processing 
-        case (current_state)
-            IDLE_ST : 
-                o_write_cmd_iic_addr <= i_cfg_iic_address;
+    always_ff @(posedge i_clk, negedge i_resetn) begin : o_write_cmd_iic_addr_processing 
+        if (~i_resetn) begin 
+            o_write_cmd_iic_addr <= '{default:0};
+        end else begin 
 
-            default : 
-                o_write_cmd_iic_addr <= o_write_cmd_iic_addr;
+            case (current_state)
+                IDLE_ST : 
+                    o_write_cmd_iic_addr <= i_cfg_iic_address;
 
-        endcase // current_state
+                default : 
+                    o_write_cmd_iic_addr <= o_write_cmd_iic_addr;
+
+            endcase // current_state
+        end
     end 
 
 
-    always_ff @(posedge i_clk) begin : o_write_cmd_size_processing 
-        case (current_state)
-            DECODE_ST : 
-                o_write_cmd_size <= i_din[25:24];
+    always_ff @(posedge i_clk, negedge i_resetn) begin : o_write_cmd_size_processing 
+        if (~i_resetn) begin 
+            o_write_cmd_size <= '{default:0};
+        end else begin 
+            case (current_state)
+                DECODE_ST : 
+                    o_write_cmd_size <= i_din[25:24];
 
-            default : 
-                o_write_cmd_size <= o_write_cmd_size;
-        endcase // current_state
+                default : 
+                    o_write_cmd_size <= o_write_cmd_size;
+            endcase // current_state
+        end 
     end 
 
 
-    always_ff @(posedge i_clk) begin : o_write_cmd_valid_processing 
-        case (current_state)
-            PERFORM_OPERATION_ST : 
-                if (i_s_axis_tready) begin 
-                    if (size == 0) begin 
-                        o_write_cmd_valid <= 1'b1;
+    always_ff @(posedge i_clk, negedge i_resetn) begin : o_write_cmd_valid_processing 
+        if (~i_resetn) begin 
+            o_write_cmd_valid <= 1'b0;
+        end else begin 
+
+            case (current_state)
+                PERFORM_OPERATION_ST : 
+                    if (i_s_axis_tready) begin 
+                        if (size == 0) begin 
+                            o_write_cmd_valid <= 1'b1;
+                        end else begin 
+                            o_write_cmd_valid <= 1'b0;
+                        end 
                     end else begin 
                         o_write_cmd_valid <= 1'b0;
                     end 
-                end else begin 
+
+                default : 
                     o_write_cmd_valid <= 1'b0;
-                end 
 
-            default : 
-                o_write_cmd_valid <= 1'b0;
-
-        endcase // current_state
+            endcase // current_state
+        end 
     end 
 
 
