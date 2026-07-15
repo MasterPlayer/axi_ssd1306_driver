@@ -4,24 +4,24 @@ module axis_ucode_processor #(
     parameter integer SIZE_WIDTH = 16,
     parameter integer DATA_WIDTH = 32
 ) (
-    input  logic                  i_clk               ,
-    input  logic                  i_resetn             ,
+    input  logic                  i_clk             ,
+    input  logic                  i_resetn          ,
     //
-    input  logic                  i_cfg_initialize    ,
-    input  logic [           7:0] i_cfg_iic_address   ,
+    input  logic                  i_cfg_initialize  ,
+    input  logic [           7:0] i_cfg_iic_address ,
     //
-    output logic [           5:0] o_addr              ,
-    output logic                  o_en                ,
-    input  logic [          31:0] i_din               ,
+    output logic [           5:0] o_addr            ,
+    output logic                  o_en              ,
+    input  logic [          31:0] i_din             ,
     //
-    output logic [           7:0] o_write_cmd_iic_addr,
-    output logic [SIZE_WIDTH-1:0] o_write_cmd_size    ,
-    output logic                  o_write_cmd_valid   ,
+    output logic [           7:0] WRITE_CMD_IIC_ADDR,
+    output logic [SIZE_WIDTH-1:0] WRITE_CMD_SIZE    ,
+    output logic                  WRITE_CMD_VALID   ,
     //
-    output logic [DATA_WIDTH-1:0] o_s_axis_tdata      ,
-    output logic                  o_s_axis_tlast      ,
-    output logic                  o_s_axis_tvalid     ,
-    input  logic                  i_s_axis_tready
+    output logic [DATA_WIDTH-1:0] M_AXIS_TDATA      ,
+    output logic                  M_AXIS_TLAST      ,
+    output logic                  M_AXIS_TVALID     ,
+    input  logic                  M_AXIS_TREADY
     //
 );
 
@@ -74,7 +74,7 @@ module axis_ucode_processor #(
                     end 
 
                 PERFORM_OPERATION_ST : 
-                    if (i_s_axis_tready) begin
+                    if (M_AXIS_TREADY) begin
                         if (size) begin 
                             current_state <= current_state;
                         end else begin 
@@ -85,7 +85,7 @@ module axis_ucode_processor #(
                     end 
 
                 INC_PTR_ST : 
-                    if (i_s_axis_tready) begin 
+                    if (M_AXIS_TREADY) begin 
                         if (o_addr == 6'h3F) begin 
                             current_state <= IDLE_ST;
                         end else begin 
@@ -113,7 +113,7 @@ module axis_ucode_processor #(
                     o_addr <= '{default:0};
 
                 INC_PTR_ST : 
-                    if (i_s_axis_tready) begin 
+                    if (M_AXIS_TREADY) begin 
                         o_addr <= o_addr + 1;
                     end else begin 
                         o_addr <= o_addr;
@@ -159,7 +159,7 @@ module axis_ucode_processor #(
                     size <= i_din[25:24];
 
                 PERFORM_OPERATION_ST : 
-                    if (i_s_axis_tready) begin 
+                    if (M_AXIS_TREADY) begin 
                         size <= size - 1;
                     end else begin 
                         size <= size;
@@ -199,7 +199,7 @@ module axis_ucode_processor #(
                     shift_register_data <= i_din[31:0];
 
                 PERFORM_OPERATION_ST : 
-                    if (i_s_axis_tready) begin
+                    if (M_AXIS_TREADY) begin
                         shift_register_data[23:0] <= shift_register_data[31:8]; 
                     end else begin 
                         shift_register_data[23:0] <= shift_register_data[23:0];
@@ -213,103 +213,103 @@ module axis_ucode_processor #(
     end 
 
 
-    always_ff @(posedge i_clk, negedge i_resetn) begin : o_s_axis_tdata_processing 
+    always_ff @(posedge i_clk, negedge i_resetn) begin : M_AXIS_TDATA_processing 
         if (~i_resetn) begin 
-            o_s_axis_tdata <= '{default:0};
+            M_AXIS_TDATA <= '{default:0};
         end else begin 
             case (current_state) 
 
                 PERFORM_OPERATION_ST : 
-                    if (i_s_axis_tready) begin 
-                        o_s_axis_tdata <= shift_register_data[7:0];
+                    if (M_AXIS_TREADY) begin 
+                        M_AXIS_TDATA <= shift_register_data[7:0];
                     end else begin 
-                        o_s_axis_tdata <= o_s_axis_tdata;
+                        M_AXIS_TDATA <= M_AXIS_TDATA;
                     end 
 
                 default : 
-                    o_s_axis_tdata <= o_s_axis_tdata;
+                    M_AXIS_TDATA <= M_AXIS_TDATA;
             endcase // current_state
         end 
     end 
 
 
-    always_comb o_s_axis_tlast = (size == 0);
+    always_comb M_AXIS_TLAST = (size == 0);
 
 
-    always_ff @(posedge i_clk, negedge i_resetn) begin : o_s_axis_tvalid_processing 
+    always_ff @(posedge i_clk, negedge i_resetn) begin : M_AXIS_TVALID_processing 
         if (~i_resetn) begin 
-            o_s_axis_tvalid <= 1'b0;
+            M_AXIS_TVALID <= 1'b0;
         end else begin 
             case (current_state) 
                 PERFORM_OPERATION_ST : 
-                    if (i_s_axis_tready) begin 
+                    if (M_AXIS_TREADY) begin 
                         if (size) begin 
-                            o_s_axis_tvalid <= 1'b1;
+                            M_AXIS_TVALID <= 1'b1;
                         end else begin 
-                            o_s_axis_tvalid <= 1'b0;
+                            M_AXIS_TVALID <= 1'b0;
                         end 
                     end else begin 
-                        o_s_axis_tvalid <= o_s_axis_tvalid;
+                        M_AXIS_TVALID <= M_AXIS_TVALID;
                     end 
 
                 default : 
-                    o_s_axis_tvalid <= o_s_axis_tvalid;
+                    M_AXIS_TVALID <= M_AXIS_TVALID;
             endcase // current_state
         end 
     end 
 
 
-    always_ff @(posedge i_clk, negedge i_resetn) begin : o_write_cmd_iic_addr_processing 
+    always_ff @(posedge i_clk, negedge i_resetn) begin : WRITE_CMD_IIC_ADDR_processing 
         if (~i_resetn) begin 
-            o_write_cmd_iic_addr <= '{default:0};
+            WRITE_CMD_IIC_ADDR <= '{default:0};
         end else begin 
 
             case (current_state)
                 IDLE_ST : 
-                    o_write_cmd_iic_addr <= i_cfg_iic_address;
+                    WRITE_CMD_IIC_ADDR <= i_cfg_iic_address;
 
                 default : 
-                    o_write_cmd_iic_addr <= o_write_cmd_iic_addr;
+                    WRITE_CMD_IIC_ADDR <= WRITE_CMD_IIC_ADDR;
 
             endcase // current_state
         end
     end 
 
 
-    always_ff @(posedge i_clk, negedge i_resetn) begin : o_write_cmd_size_processing 
+    always_ff @(posedge i_clk, negedge i_resetn) begin : WRITE_CMD_SIZE_processing 
         if (~i_resetn) begin 
-            o_write_cmd_size <= '{default:0};
+            WRITE_CMD_SIZE <= '{default:0};
         end else begin 
             case (current_state)
                 DECODE_ST : 
-                    o_write_cmd_size <= i_din[25:24];
+                    WRITE_CMD_SIZE <= i_din[25:24];
 
                 default : 
-                    o_write_cmd_size <= o_write_cmd_size;
+                    WRITE_CMD_SIZE <= WRITE_CMD_SIZE;
             endcase // current_state
         end 
     end 
 
 
-    always_ff @(posedge i_clk, negedge i_resetn) begin : o_write_cmd_valid_processing 
+    always_ff @(posedge i_clk, negedge i_resetn) begin : WRITE_CMD_VALID_PROCESSING 
         if (~i_resetn) begin 
-            o_write_cmd_valid <= 1'b0;
+            WRITE_CMD_VALID <= 1'b0;
         end else begin 
 
             case (current_state)
                 PERFORM_OPERATION_ST : 
-                    if (i_s_axis_tready) begin 
+                    if (M_AXIS_TREADY) begin 
                         if (size == 0) begin 
-                            o_write_cmd_valid <= 1'b1;
+                            WRITE_CMD_VALID <= 1'b1;
                         end else begin 
-                            o_write_cmd_valid <= 1'b0;
+                            WRITE_CMD_VALID <= 1'b0;
                         end 
                     end else begin 
-                        o_write_cmd_valid <= 1'b0;
+                        WRITE_CMD_VALID <= 1'b0;
                     end 
 
                 default : 
-                    o_write_cmd_valid <= 1'b0;
+                    WRITE_CMD_VALID <= 1'b0;
 
             endcase // current_state
         end 

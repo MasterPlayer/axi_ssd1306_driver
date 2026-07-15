@@ -8,7 +8,7 @@ module tb_axi_ssd1306_core ();
     parameter integer AXI_ADDR_WIDTH   = 32       ;
     parameter integer AXI_DATA_WIDTH   = 32       ;
     parameter         CLK_PERIOD       = 100000000;
-    parameter         CLK_I2C_PERIOD   = 100000   ;
+    parameter         CLK_I2C_PERIOD   = 400000   ;
     parameter         AXIS_DATA_WIDTH  = 8        ;
     parameter         AXIS_DEPTH       = 16       ;
     parameter         SIZE_WIDTH       = 8        ;
@@ -184,18 +184,18 @@ module tb_axi_ssd1306_core ();
         .i_cfg_initialize     (i_cfg_initialize     ),
         .i_cfg_selector       (i_cfg_selector       ),
         // interface to memory
-        .o_m_axi_araddr       (o_m_axi_araddr       ),
-        .o_m_axi_arlen        (o_m_axi_arlen        ),
-        .o_m_axi_arsize       (o_m_axi_arsize       ),
-        .o_m_axi_arburst      (o_m_axi_arburst      ),
-        .o_m_axi_arvalid      (o_m_axi_arvalid      ),
-        .i_m_axi_arready      (i_m_axi_arready      ),
+        .M_AXI_ARADDR         (o_m_axi_araddr       ),
+        .M_AXI_ARLEN          (o_m_axi_arlen        ),
+        .M_AXI_ARSIZE         (o_m_axi_arsize       ),
+        .M_AXI_ARBURST        (o_m_axi_arburst      ),
+        .M_AXI_ARVALID        (o_m_axi_arvalid      ),
+        .M_AXI_ARREADY        (i_m_axi_arready      ),
         //
-        .i_m_axi_rdata        (i_m_axi_rdata        ),
-        .i_m_axi_rresp        (i_m_axi_rresp        ),
-        .i_m_axi_rlast        (i_m_axi_rlast        ),
-        .i_m_axi_rvalid       (i_m_axi_rvalid       ),
-        .o_m_axi_rready       (o_m_axi_rready       ),
+        .M_AXI_RDATA          (i_m_axi_rdata        ),
+        .M_AXI_RRESP          (i_m_axi_rresp        ),
+        .M_AXI_RLAST          (i_m_axi_rlast        ),
+        .M_AXI_RVALID         (i_m_axi_rvalid       ),
+        .M_AXI_RREADY         (o_m_axi_rready       ),
         //
         .S_AXI_UCODE_ACLK     (i_clk                ),
         .S_AXI_UCODE_ARESETN  (i_resetn             ),
