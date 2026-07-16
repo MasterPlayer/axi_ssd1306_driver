@@ -9,6 +9,8 @@ module axis_ucode_processor #(
     //
     input  logic                  i_cfg_initialize  ,
     input  logic [           7:0] i_cfg_iic_address ,
+    output logic                  o_cfg_has_busy    ,
+    output logic                  o_cfg_has_complete,
     //
     output logic [           5:0] o_addr            ,
     output logic                  o_en              ,
@@ -100,6 +102,48 @@ module axis_ucode_processor #(
 
             endcase // current_state
 
+        end 
+    end 
+
+
+    always_ff @(posedge i_clk, negedge i_resetn) begin : o_cfg_has_complete_processing
+        if (~i_resetn) begin 
+            o_cfg_has_complete <= 1'b0;
+        end else begin 
+
+            case (current_state)
+                INC_PTR_ST : 
+                    if (M_AXIS_TREADY) begin 
+                        if (o_addr == 6'h3f) begin 
+                            o_cfg_has_complete <= 1'b1;
+                        end else begin 
+                            o_cfg_has_complete <= 1'b0;
+                        end 
+                    end else begin 
+                        o_cfg_has_complete <= 1'b0;
+                    end 
+
+                default : 
+                    o_cfg_has_complete <= 1'b0;
+
+            endcase // current_state
+
+        end 
+    end 
+
+
+    always_ff @(posedge i_clk, negedge i_resetn) begin : o_cfg_has_busy_processing 
+        if (~i_resetn) begin 
+            o_cfg_has_busy <= 1'b0;
+        end else begin 
+            case (current_state)
+                IDLE_ST : 
+                    o_cfg_has_busy <= 1'b0;
+
+                default : 
+                    o_cfg_has_busy <= 1'b1;
+
+            endcase // current_state
         end 
     end 
 

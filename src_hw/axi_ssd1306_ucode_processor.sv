@@ -13,6 +13,9 @@ module axi_ssd1306_ucode_processor #(
     //
     input  logic                            i_cfg_initialize  ,
     input  logic [                     7:0] i_cfg_iic_address ,
+    //
+    output logic                            o_cfg_has_busy    ,
+    output logic                            o_cfg_has_complete,
     ///
     output logic [                     7:0] WRITE_CMD_IIC_ADDR,
     output logic [          SIZE_WIDTH-1:0] WRITE_CMD_SIZE    ,
@@ -509,6 +512,8 @@ module axi_ssd1306_ucode_processor #(
         //
         .i_cfg_initialize  (i_cfg_initialize  ),
         .i_cfg_iic_address (i_cfg_iic_address ),
+        .o_cfg_has_busy    (o_cfg_has_busy    ),
+        .o_cfg_has_complete(o_cfg_has_complete),
         //
         .o_addr            (addrb             ),
         .o_en              (enb               ),

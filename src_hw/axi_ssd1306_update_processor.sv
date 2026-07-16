@@ -13,6 +13,9 @@ module axi_ssd1306_update_processor #(
     input  logic [   AXI_ADDR_WIDTH-1:0] i_cfg_axi_baseaddress,
     input  logic [                  7:0] i_cfg_iic_address    ,
     input  logic                         i_cfg_update_screen  ,
+    output logic                         o_cfg_has_busy       ,
+    output logic                         o_cfg_has_complete   ,
+    input  logic [                  2:0] i_cfg_segment_limit  ,
     // interface to memory
     output logic [   AXI_ADDR_WIDTH-1:0] M_AXI_ARADDR         ,
     output logic [                  7:0] M_AXI_ARLEN          ,
@@ -59,6 +62,7 @@ module axi_ssd1306_update_processor #(
     logic [1:0] byte_counter;
 
     logic [7:0] segment_address;
+    logic [7:0] segment_address_limit;
 
 
     always_ff @(posedge i_clk, negedge i_resetn) begin : current_state_processing 
@@ -123,7 +127,7 @@ module axi_ssd1306_update_processor #(
                     
                 CHECK_SEGMENT_ADDRESS_ST :
                     if (M_AXIS_TREADY) begin 
-                        if (segment_address == 8'hb7) begin 
+                        if (segment_address == segment_address_limit) begin 
                             current_state <= IDLE_ST;
                         end else begin 
                             current_state <= TX_CMD_SET_SEGMENT_ADDRESS_ST;
@@ -138,6 +142,47 @@ module axi_ssd1306_update_processor #(
             endcase
         end 
     end 
+
+
+    always_ff @(posedge i_clk, negedge i_resetn) begin : o_cfg_has_busy_processing 
+        if (~i_resetn) begin 
+            o_cfg_has_busy <= 1'b0;
+        end else begin 
+            case (current_state)
+                IDLE_ST : 
+                    o_cfg_has_busy <= 1'b0;
+
+                default : 
+                    o_cfg_has_busy <= 1'b1;
+
+            endcase // current_state
+        end 
+    end 
+
+
+    always_ff @(posedge i_clk, negedge i_resetn) begin : o_cfg_has_complete_processing 
+        if (~i_resetn) begin 
+            o_cfg_has_complete <= 1'b0;
+        end else begin 
+            case (current_state)
+
+                CHECK_SEGMENT_ADDRESS_ST : 
+                    if (M_AXIS_TREADY) begin 
+                        if (segment_address == segment_address_limit) begin 
+                            o_cfg_has_complete <= 1'b1;
+                        end else begin 
+                            o_cfg_has_complete <= 1'b0;
+                        end 
+                    end else begin 
+                        o_cfg_has_complete <= 1'b0;
+                    end 
+
+                default : 
+                    o_cfg_has_complete <= 1'b0;
+
+            endcase // current_state
+        end 
+    end
 
 
     always_ff @(posedge i_clk, negedge i_resetn) begin : word_counter_processing 
@@ -217,8 +262,6 @@ module axi_ssd1306_update_processor #(
         end else begin 
 
             case (current_state)
-                IDLE_ST : 
-                    M_AXI_ARVALID <= 1'b0;
 
                 ESTABLISH_ADDRESS_ST : 
                     if (M_AXI_ARREADY & M_AXI_ARVALID) begin 
@@ -477,6 +520,22 @@ module axi_ssd1306_update_processor #(
 
                 default : 
                     WRITE_CMD_VALID <= 1'b0;
+            endcase // current_state
+        end 
+    end 
+
+
+    always_ff @(posedge i_clk, negedge i_resetn) begin : segment_address_limit_processing 
+        if (~i_resetn) begin 
+            segment_address_limit <= '{default:0};
+        end else begin 
+            case (current_state)
+                IDLE_ST : 
+                    segment_address_limit <= 8'hb0 + i_cfg_segment_limit;
+
+                default : 
+                    segment_address_limit <= segment_address_limit;
+
             endcase // current_state
         end 
     end 

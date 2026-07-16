@@ -24,6 +24,8 @@ module tb_axi_ssd1306_core ();
     logic [               7:0] i_cfg_iic_address     = 8'h78       ;
     logic                      i_cfg_initialize      = 1'b0        ;
     logic                      i_cfg_selector        = 1'b0        ;
+    logic [              31:0] i_cfg_duration        = 32'h00000000;
+    logic [               2:0] i_cfg_segment_limit   = 3'h3        ;
     // interface to memory
     logic [AXI_ADDR_WIDTH-1:0] o_m_axi_araddr ;
     logic [               7:0] o_m_axi_arlen  ;
@@ -156,10 +158,9 @@ module tb_axi_ssd1306_core ();
 
     always_ff @(posedge i_clk) begin : i_cfg_update_screen_processing
         case (index)
-            501000   : i_cfg_update_screen <= 1'b1;
-            12000000 : i_cfg_update_screen <= 1'b1;
-            24000000 : i_cfg_update_screen <= 1'b1;
-            default  : i_cfg_update_screen <= 1'b0;
+            0       : i_cfg_update_screen <= 1'b0;
+            501000  : i_cfg_update_screen <= 1'b1;
+            default : i_cfg_update_screen <= i_cfg_update_screen;
         endcase // index
     end 
 
@@ -183,19 +184,21 @@ module tb_axi_ssd1306_core ();
         .i_cfg_iic_address    (i_cfg_iic_address    ),
         .i_cfg_initialize     (i_cfg_initialize     ),
         .i_cfg_selector       (i_cfg_selector       ),
+        .i_cfg_duration       (i_cfg_duration       ),
+        .i_cfg_segment_limit  (i_cfg_segment_limit  ),
         // interface to memory
-        .M_AXI_ARADDR         (o_m_axi_araddr       ),
-        .M_AXI_ARLEN          (o_m_axi_arlen        ),
-        .M_AXI_ARSIZE         (o_m_axi_arsize       ),
-        .M_AXI_ARBURST        (o_m_axi_arburst      ),
-        .M_AXI_ARVALID        (o_m_axi_arvalid      ),
-        .M_AXI_ARREADY        (i_m_axi_arready      ),
+        .M_AXI_UPD_ARADDR     (o_m_axi_araddr       ),
+        .M_AXI_UPD_ARLEN      (o_m_axi_arlen        ),
+        .M_AXI_UPD_ARSIZE     (o_m_axi_arsize       ),
+        .M_AXI_UPD_ARBURST    (o_m_axi_arburst      ),
+        .M_AXI_UPD_ARVALID    (o_m_axi_arvalid      ),
+        .M_AXI_UPD_ARREADY    (i_m_axi_arready      ),
         //
-        .M_AXI_RDATA          (i_m_axi_rdata        ),
-        .M_AXI_RRESP          (i_m_axi_rresp        ),
-        .M_AXI_RLAST          (i_m_axi_rlast        ),
-        .M_AXI_RVALID         (i_m_axi_rvalid       ),
-        .M_AXI_RREADY         (o_m_axi_rready       ),
+        .M_AXI_UPD_RDATA      (i_m_axi_rdata        ),
+        .M_AXI_UPD_RRESP      (i_m_axi_rresp        ),
+        .M_AXI_UPD_RLAST      (i_m_axi_rlast        ),
+        .M_AXI_UPD_RVALID     (i_m_axi_rvalid       ),
+        .M_AXI_UPD_RREADY     (o_m_axi_rready       ),
         //
         .S_AXI_UCODE_ACLK     (i_clk                ),
         .S_AXI_UCODE_ARESETN  (i_resetn             ),

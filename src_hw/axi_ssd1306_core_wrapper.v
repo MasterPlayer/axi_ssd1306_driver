@@ -19,6 +19,8 @@ module axi_ssd1306_core_wrapper #(
     input  wire [                     7:0] i_cfg_iic_address    ,
     input  wire                            i_cfg_initialize     ,
     input  wire                            i_cfg_selector       ,
+    input  wire [                    31:0] i_cfg_duration       ,
+    input  wire [                     2:0] i_cfg_segment_limit  , // 4 or 8
     // intewire to memory
     output wire [      AXI_ADDR_WIDTH-1:0] M_AXI_UPD_ARADDR     ,
     output wire [                     7:0] M_AXI_UPD_ARLEN      ,
@@ -103,6 +105,9 @@ module axi_ssd1306_core_wrapper #(
         .i_cfg_iic_address    (i_cfg_iic_address    ),
         .i_cfg_initialize     (i_cfg_initialize     ),
         .i_cfg_selector       (i_cfg_selector       ),
+        
+        .i_cfg_duration       (i_cfg_duration       ),
+        .i_cfg_segment_limit  (i_cfg_segment_limit  ),   // 4 or 8
         // interface to memory
         .M_AXI_UPD_ARADDR     (M_AXI_UPD_ARADDR     ),
         .M_AXI_UPD_ARLEN      (M_AXI_UPD_ARLEN      ),

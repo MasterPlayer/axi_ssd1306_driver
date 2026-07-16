@@ -21,20 +21,21 @@ module axi_ssd1306_core #(
     input  logic [                           7:0] i_cfg_iic_address    ,
     input  logic                                  i_cfg_initialize     ,
     input  logic                                  i_cfg_selector       ,
-    // input  logic [                     2:0] i_cfg_segment_limit  , // 4 or 8
+    input  logic [                          31:0] i_cfg_duration       ,
+    input  logic [                           2:0] i_cfg_segment_limit  , // 4 or 8
     // interface to memory
-    output logic [            AXI_ADDR_WIDTH-1:0] M_AXI_UPD_ARADDR       ,
-    output logic [                           7:0] M_AXI_UPD_ARLEN        ,
-    output logic [                           2:0] M_AXI_UPD_ARSIZE       ,
-    output logic [                           1:0] M_AXI_UPD_ARBURST      ,
-    output logic                                  M_AXI_UPD_ARVALID      ,
-    input  logic                                  M_AXI_UPD_ARREADY      ,
+    output logic [            AXI_ADDR_WIDTH-1:0] M_AXI_UPD_ARADDR     ,
+    output logic [                           7:0] M_AXI_UPD_ARLEN      ,
+    output logic [                           2:0] M_AXI_UPD_ARSIZE     ,
+    output logic [                           1:0] M_AXI_UPD_ARBURST    ,
+    output logic                                  M_AXI_UPD_ARVALID    ,
+    input  logic                                  M_AXI_UPD_ARREADY    ,
     //
-    input  logic [            AXI_DATA_WIDTH-1:0] M_AXI_UPD_RDATA        ,
-    input  logic [                           1:0] M_AXI_UPD_RRESP        ,
-    input  logic                                  M_AXI_UPD_RLAST        ,
-    input  logic                                  M_AXI_UPD_RVALID       ,
-    output logic                                  M_AXI_UPD_RREADY       ,
+    input  logic [            AXI_DATA_WIDTH-1:0] M_AXI_UPD_RDATA      ,
+    input  logic [                           1:0] M_AXI_UPD_RRESP      ,
+    input  logic                                  M_AXI_UPD_RLAST      ,
+    input  logic                                  M_AXI_UPD_RVALID     ,
+    output logic                                  M_AXI_UPD_RREADY     ,
     //
     input  logic                                  S_AXI_UCODE_ACLK     ,
     input  logic                                  S_AXI_UCODE_ARESETN  ,
@@ -114,7 +115,13 @@ module axi_ssd1306_core #(
     logic [SIZE_WIDTH-1:0] write_cmd_size_update    ;
     logic                  write_cmd_valid_update   ;
 
+    logic o_cfg_has_busy_ucode;
+    logic o_cfg_has_busy_update;
 
+    logic o_cfg_has_complete_ucode;
+    logic o_cfg_has_complete_update;
+
+    logic has_event;
 
     axi_ssd1306_ucode_processor #(
         .S_AXI_ID_WIDTH  (S_AXI_UCODE_ID_WIDTH  ),
@@ -127,6 +134,8 @@ module axi_ssd1306_core #(
         .i_resetn          (i_resetn                ),
         .i_cfg_initialize  (i_cfg_initialize        ),
         .i_cfg_iic_address (i_cfg_iic_address       ),
+        .o_cfg_has_busy    (o_cfg_has_busy_ucode    ),
+        .o_cfg_has_complete(o_cfg_has_complete_ucode),
         ///
         .WRITE_CMD_IIC_ADDR(write_cmd_iic_addr_ucode),
         .WRITE_CMD_SIZE    (write_cmd_size_ucode    ),
@@ -193,6 +202,9 @@ module axi_ssd1306_core #(
         .i_cfg_axi_baseaddress(i_cfg_axi_baseaddress    ),
         .i_cfg_iic_address    (i_cfg_iic_address        ),
         .i_cfg_update_screen  (i_cfg_update_screen      ),
+        .o_cfg_has_busy       (o_cfg_has_busy_update    ),
+        .o_cfg_has_complete   (o_cfg_has_complete_update),
+        .i_cfg_segment_limit  (i_cfg_segment_limit      ),
         // interface to memory
         .M_AXI_ARADDR         (M_AXI_UPD_ARADDR         ),
         .M_AXI_ARLEN          (M_AXI_UPD_ARLEN          ),
@@ -290,5 +302,16 @@ module axi_ssd1306_core #(
 
 
 
+    axi_ssd1306_event_generator axi_ssd1306_event_generator_inst (
+        .i_clk                    (i_clk                    ),
+        .i_resetn                 (i_resetn                 ),
+        // configuration for this unit
+        .i_cfg_duration           (i_cfg_duration           ),
+        // input signal group
+        .i_cfg_has_complete_ucode (o_cfg_has_complete_ucode ),
+        .i_cfg_has_complete_update(o_cfg_has_complete_update),
+        // output signal group
+        .has_event                (has_event                )
+    );
 
 endmodule
