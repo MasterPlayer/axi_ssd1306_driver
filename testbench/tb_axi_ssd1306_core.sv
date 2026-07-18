@@ -5,16 +5,16 @@
 
 module tb_axi_ssd1306_core ();
 
-    parameter integer AXI_ADDR_WIDTH   = 32       ;
-    parameter integer AXI_DATA_WIDTH   = 32       ;
-    parameter         CLK_PERIOD       = 100000000;
-    parameter         CLK_I2C_PERIOD   = 400000   ;
-    parameter         AXIS_DATA_WIDTH  = 8        ;
-    parameter         AXIS_DEPTH       = 16       ;
-    parameter         SIZE_WIDTH       = 8        ;
-    parameter integer S_AXI_UCODE_ID_WIDTH   = 4        ;
-    parameter integer S_AXI_UCODE_DATA_WIDTH = 32       ;
-    parameter integer S_AXI_UCODE_ADDR_WIDTH = 8        ;
+    parameter integer   AXI_ADDR_WIDTH         = 32       ;
+    parameter integer   AXI_DATA_WIDTH         = 32       ;
+    parameter CLK_PERIOD             = 100000000;
+    parameter CLK_I2C_PERIOD         = 400000   ;
+    parameter AXIS_DATA_WIDTH        = 8        ;
+    parameter AXIS_DEPTH             = 16       ;
+    parameter SIZE_WIDTH             = 8        ;
+    parameter integer   S_AXI_UCODE_ID_WIDTH   = 4        ;
+    parameter integer   S_AXI_UCODE_DATA_WIDTH = 32       ;
+    parameter integer   S_AXI_UCODE_ADDR_WIDTH = 8        ;
 
     logic i_clk   ;
     logic i_resetn = 1'b0;
@@ -25,7 +25,7 @@ module tb_axi_ssd1306_core ();
     logic                      i_cfg_initialize      = 1'b0        ;
     logic                      i_cfg_selector        = 1'b0        ;
     logic [              31:0] i_cfg_duration        = 32'h00000000;
-    logic [               2:0] i_cfg_segment_limit   = 3'h3        ;
+    logic [               2:0] i_cfg_segment_limit   = 3'h7        ;
     // interface to memory
     logic [AXI_ADDR_WIDTH-1:0] o_m_axi_araddr ;
     logic [               7:0] o_m_axi_arlen  ;
@@ -158,9 +158,9 @@ module tb_axi_ssd1306_core ();
 
     always_ff @(posedge i_clk) begin : i_cfg_update_screen_processing
         case (index)
-            0       : i_cfg_update_screen <= 1'b0;
-            501000  : i_cfg_update_screen <= 1'b1;
-            default : i_cfg_update_screen <= i_cfg_update_screen;
+            0        : i_cfg_update_screen <= 1'b0;
+            500000   : i_cfg_update_screen <= 1'b1;
+            default  : i_cfg_update_screen <= i_cfg_update_screen;
         endcase // index
     end 
 
@@ -572,6 +572,32 @@ module tb_axi_ssd1306_core ();
             default : begin s_axi_awaddr <= 32'h00000000; s_axi_awvalid <= 1'b0; s_axi_wdata <= 32'h00000000; s_axi_wvalid <= 1'b0; s_axi_wlast <= 1'b0; s_axi_bready <= 1'b1; end
         endcase
     end 
+
+
+
+
+
+    logic        i_start;
+    logic [31:0] i_phase = 32'h00400000;
+    logic [31:0] i_pause = 32'h00000000;
+
+    always_ff @(posedge i_clk) begin : start_processing
+        case (index)
+            0       : i_start <= 1'b0;
+            1000    : i_start <= 1'b1;
+            default : i_start <= i_start;
+        endcase // index
+    end 
+
+    axis_dds_x5 axis_dds_x5_inst (
+        .i_clk        (i_clk  ),
+        .i_start      (i_start),
+        .i_phase      (i_phase),
+        .i_pause      (i_pause),
+        .m_axis_tdata (       ),
+        .m_axis_tvalid(       )
+    );
+
 
 
 endmodule 
